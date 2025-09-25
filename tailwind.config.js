@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'serif-heading': ['"Source Serif 4"', 'serif'],
+        'serif-main': ['"Source Serif 4"', 'serif'],
+      },
       animation: {
         'fade-in': 'fadeIn 1s ease-in-out',
         'slide-in-left': 'slideInLeft 0.8s ease-out',

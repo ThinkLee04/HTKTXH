@@ -1,26 +1,43 @@
-// src/components/TimelineItem.jsx
 import { motion } from "framer-motion";
 
-// Bỏ các prop animation, chỉ nhận `variants`
-export const TimelineItem = ({ item, variants }) => {
+export const TimelineItem = ({ item }) => {
+  const itemVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    // Thay `initial`, `whileInView` bằng `variants`
-    <motion.div className="w-full pl-32 pr-8" variants={variants}>
+    <motion.div
+      className="w-full pl-32 pr-8"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.4 }}
+      variants={itemVariants}
+    >
       <div 
-        className="absolute top-1/4 w-[35vw] rounded-xl border border-amber-400/20 bg-stone-900/70 p-8 shadow-2xl shadow-black/40 backdrop-blur-md"
+        className="absolute top-1/4 w-[35vw] rounded-md border border-amber-800/60 bg-[#3a352f]/75 p-8 shadow-2xl shadow-black/50 backdrop-blur-sm"
       >
-        <h3 className="text-2xl font-bold mb-2 text-amber-400">
+        {/* [CẢI TIẾN] Dùng font Source Serif Pro cho tiêu đề, rõ ràng và trang trọng */}
+        <h3 className="text-3xl font-bold mb-2 text-amber-300 font-serif-heading">
           {item.title}
         </h3>
-        <p className="text-md font-light italic text-amber-100/70 mb-4">
+        <p className="text-lg font-light italic text-amber-200/70 mb-4">
           {item.period}
         </p>
-        <p className="text-stone-200 leading-relaxed">
+        {/* [CẢI TIẾN] Tăng kích thước chữ và khoảng cách dòng để dễ đọc hơn từ xa */}
+        <p className="text-lg text-stone-200 leading-relaxed font-serif-main">
           {item.desc}
         </p>
-        <div
-          className="absolute top-2/3 -translate-y-1/2 w-4 h-4 transform rotate-45 left-[-8.5px] border-b border-r border-amber-400/20 bg-stone-900/70"
-        ></div>
+        {/* <div
+          className="absolute top-2/3 -translate-y-1/2 w-4 h-4 transform rotate-45 left-[-8.5px] border-b border-r border-amber-800/60 bg-[#3a352f]"
+        ></div> */}
       </div>
     </motion.div>
   );

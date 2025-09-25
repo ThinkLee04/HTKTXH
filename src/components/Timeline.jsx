@@ -1,9 +1,8 @@
-﻿// src/components/Timeline.jsx
-import { motion, useScroll, useSpring } from "framer-motion";
+﻿import { motion, useScroll, useSpring } from "framer-motion";
 import { useRef } from "react";
-import { TimelineItem } from "./TimelineItem"; 
+import { TimelineItem } from "./TimelineItem";
 
-// Dữ liệu không đổi
+// Dữ liệu không thay đổi
 const timelineData = [
     {
       title: "Cộng sản nguyên thủy",
@@ -37,23 +36,22 @@ const timelineData = [
     }
 ];
 
-// Component mốc tròn được thiết kế lại
+// Mốc tròn được tinh chỉnh lại cho phù hợp hơn
 const TimelineMarker = () => (
   <motion.div
     className="absolute top-1/3 -translate-x-1/2 -translate-y-1/2 z-30"
     style={{ left: "calc(2rem + 0.8rem)" }}
-    initial={{ scale: 0, opacity: 0 }}
-    whileInView={{ scale: 1, opacity: 1 }}
+    initial={{ scale: 0 }}
+    whileInView={{ scale: 1 }}
     viewport={{ once: true, amount: 0.3 }}
-    transition={{ duration: 0.5, delay: 0.2 }}
+    transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
   >
-    <div className="w-12 h-12 rounded-full bg-stone-800 flex items-center justify-center ring-8 ring-stone-900/50">
-      <div className="w-6 h-6 rounded-full bg-amber-400 shadow-[0_0_15px_2px] shadow-amber-400/50"></div>
+    <div className="w-12 h-12 rounded-full bg-[#2a2722] flex items-center justify-center ring-8 ring-black/30">
+      <div className="w-5 h-5 rounded-full bg-amber-700 border-2 border-amber-500"></div>
     </div>
   </motion.div>
 );
 
-// Hàm mask không đổi
 const getMaskClass = (index, total) => {
   if (index === 0) {
     return "[mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]";
@@ -78,8 +76,8 @@ const Timeline = () => {
   });
 
   return (
-    <div ref={ref} className="relative bg-gray-900">
-      {/* Container hình nền không đổi */}
+    // Nền chính màu nâu sẫm
+    <div ref={ref} className="relative bg-[#2a2722]">
       <div className="absolute inset-0 z-0">
         {timelineData.map((item, index) => (
           <div
@@ -87,27 +85,27 @@ const Timeline = () => {
             className={`relative h-screen w-full sticky top-0 bg-cover bg-center ${getMaskClass(index, timelineData.length)}`}
             style={{ backgroundImage: `url(${item.imageUrl})` }}
           >
-            <div className="absolute inset-0 bg-black/60"></div>
+            {/* Lớp phủ màu nâu ấm tạo hiệu ứng sepia */}
+            <div className="absolute inset-0 bg-[#2a2722]/70"></div>
           </div>
         ))}
       </div>
 
-  {/* TRỤC TIMELINE ĐƯỢC THIẾT KẾ LẠI */}
-  <div className="absolute top-0 left-16 w-3 h-full z-10">
-        {/* Nền của trục timeline */}
-        <div className="w-full h-full bg-amber-200/10"></div>
-        {/* Thanh tiến trình màu vàng */}
+      {/* Trục timeline với màu sắc cổ điển hơn */}
+      <div className="absolute top-0 left-16 w-3 h-full z-10">
+        <div className="w-full h-full bg-black/30"></div>
+        {/* Thanh tiến trình màu đồng cũ */}
         <motion.div
-          className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-amber-400 to-amber-600 origin-top"
+          className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-amber-700 to-amber-900 origin-top"
           style={{ scaleY }}
         />
       </div>
 
-  {/* Container nội dung không đổi */}
-  <div className="relative z-30">
+      <div className="relative z-30">
         {timelineData.map((item, index) => (
           <section key={index} className="relative h-screen flex items-center">
             <TimelineMarker />
+            {/* Truyền `item` vào như cũ */}
             <TimelineItem item={item} />
           </section>
         ))}
