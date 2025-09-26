@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
@@ -13,6 +13,8 @@ const AdminPanel = ({ sessionId }) => {
   const [isStarting, setIsStarting] = useState(false);
   const [isProgressing, setIsProgressing] = useState(false);
   const [showNameInput, setShowNameInput] = useState(false); // Không hiển thị name input nữa
+  const [timeLeft, setTimeLeft] = useState(0); // Timer countdown
+  const [canProceed, setCanProceed] = useState(false); // Can proceed to next question
 
   // Listen to room changes
   useEffect(() => {
@@ -29,12 +31,36 @@ const AdminPanel = ({ sessionId }) => {
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'sessions', sessionId), (doc) => {
       if (doc.exists()) {
-        setSession(doc.data());
+        const sessionData = doc.data();
+        setSession(sessionData);
+        
+        // Start countdown when new question starts
+        if (sessionData && sessionData.questionStartTime && !sessionData.isFinished) {
+          setTimeLeft(25); // Start 25s countdown
+          setCanProceed(false);
+        }
       }
     });
 
     return () => unsubscribe();
   }, [sessionId]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (session && session.questionStartTime && !session.isFinished && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(prev => {
+          const newTime = prev - 1;
+          if (newTime <= 0) {
+            setCanProceed(true); // Enable proceed button
+          }
+          return Math.max(0, newTime);
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [session, timeLeft]);
 
   // Load questions from Firestore
   useEffect(() => {
@@ -116,84 +142,6 @@ const AdminPanel = ({ sessionId }) => {
       }
     } else {
       console.log('Quiz already started');
-    }
-  };
-
-  const endCurrentQuestion = async () => {
-    if (!session) return;
-
-    setIsProgressing(true);
-    try {
-      console.log('Ending current question and awarding scores...');
-      
-      // Force award scores for current question
-      const playersCollection = collection(db, 'sessions', sessionId, 'players');
-      const playersSnapshot = await getDocs(playersCollection);
-      
-      // Process each player's pending score
-      const currentQuestionIndex = session.currentQuestionIndex;
-      const awardPromises = playersSnapshot.docs.map(async (playerDoc) => {
-        const playerData = playerDoc.data();
-        const answers = playerData.answers || [];
-        
-        // Find answer for current question that hasn't been scored yet
-        const currentAnswer = answers.find(answer => 
-          answer.questionIndex === currentQuestionIndex && 
-          answer.scoreAwarded === false
-        );
-        
-        if (currentAnswer) {
-          // Award the pending score immediately
-          const newScore = playerData.score + currentAnswer.score;
-          await updateDoc(playerDoc.ref, {
-            score: newScore
-          });
-          
-          // Update the answer to mark as scored
-          const updatedAnswers = answers.map(answer => 
-            answer.questionIndex === currentQuestionIndex 
-              ? { ...answer, scoreAwarded: true }
-              : answer
-          );
-          
-          await updateDoc(playerDoc.ref, {
-            answers: updatedAnswers
-          });
-          
-          console.log(`Awarded ${currentAnswer.score} points to ${playerData.name}`);
-        }
-      });
-      
-      await Promise.all(awardPromises);
-      
-      // Wait a bit for players to see correct answer
-      setTimeout(async () => {
-        const nextIndex = session.currentQuestionIndex + 1;
-        
-        if (nextIndex >= questions.length) {
-          // End quiz
-          await updateDoc(doc(db, 'sessions', sessionId), {
-            isFinished: true,
-            finishedAt: serverTimestamp()
-          });
-
-          await updateDoc(doc(db, 'quiz-rooms', sessionId), {
-            status: 'finished',
-            finishedAt: serverTimestamp()
-          });
-        } else {
-          // Next question
-          await updateDoc(doc(db, 'sessions', sessionId), {
-            currentQuestionIndex: nextIndex,
-            questionStartTime: serverTimestamp()
-          });
-        }
-      }, 3000); // 3 seconds delay to show correct answer
-      
-    } catch (error) {
-      console.error('Error ending current question:', error);
-    } finally {
-      setIsProgressing(false);
     }
   };
 
@@ -287,8 +235,36 @@ const AdminPanel = ({ sessionId }) => {
             ) : session.isFinished ? (
               <div className="text-green-600">✅ Quiz đã hoàn thành</div>
             ) : (
-              <div className="text-blue-600">
-                🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
+              <div className="space-y-2">
+                <div className="text-blue-600">
+                  🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
+                </div>
+                {/* Timer Display */}
+                <div className="flex items-center gap-3">
+                  <div className={`text-2xl font-bold ${
+                    timeLeft > 10 ? 'text-green-600' : 
+                    timeLeft > 5 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>
+                    ⏱️ {timeLeft}s
+                  </div>
+                  <div className="flex-1">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-1000 ${
+                          timeLeft > 10 ? 'bg-green-500' : 
+                          timeLeft > 5 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${(timeLeft / 25) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-600">
+                  {canProceed ? 
+                    '✅ Có thể chuyển câu tiếp theo' : 
+                    '⏳ Đợi hết 25 giây để có thể chuyển câu'
+                  }
+                </div>
               </div>
             )}
           </div>
@@ -301,15 +277,43 @@ const AdminPanel = ({ sessionId }) => {
           <h3 className="font-semibold text-blue-800 mb-2">
             Câu {session.currentQuestionIndex + 1}: 
           </h3>
-          <p className="text-blue-700 mb-3">
+          <p className="text-blue-700 mb-4 text-lg">
             {questions[session.currentQuestionIndex]?.question}
           </p>
-          <div className="text-sm">
-            <strong className="text-green-700">Đáp án đúng:</strong>
-            <span className="ml-2 text-green-600">
-              {questions[session.currentQuestionIndex]?.correctAnswer}
-            </span>
+          
+          {/* Hiển thị các options */}
+          <div className="mb-4 space-y-2">
+            <h4 className="font-medium text-blue-800">Các lựa chọn:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {questions[session.currentQuestionIndex]?.options?.map((option, index) => (
+                <div 
+                  key={index} 
+                  className={`p-2 rounded border ${
+                    timeLeft <= 5 && option === questions[session.currentQuestionIndex]?.correctAnswer
+                      ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
+                      : 'bg-white border-gray-200 text-gray-700'
+                  }`}
+                >
+                  {String.fromCharCode(65 + index)}. {option}
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* Hiển thị đáp án đúng chỉ khi timeLeft <= 5 */}
+          {timeLeft <= 5 && (
+            <div className="text-sm bg-green-50 p-3 rounded border border-green-200">
+              <strong className="text-green-700">🎯 Đáp án đúng:</strong>
+              <span className="ml-2 text-green-600 font-semibold">
+                {questions[session.currentQuestionIndex]?.correctAnswer}
+              </span>
+              {questions[session.currentQuestionIndex]?.explanation && (
+                <div className="mt-2 text-green-600 text-xs">
+                  <strong>Giải thích:</strong> {questions[session.currentQuestionIndex]?.explanation}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -331,26 +335,15 @@ const AdminPanel = ({ sessionId }) => {
             🔄 Khởi động lại Quiz
           </button>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* End Current Question Button */}
-            <button
-              onClick={endCurrentQuestion}
-              disabled={isProgressing}
-              className="py-3 px-4 bg-red-600 text-white font-medium text-lg rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isProgressing ? '🔄 Đang xử lý...' : '⏰ Kết thúc câu hiện tại'}
-            </button>
-            
-            {/* Next Question Button */}
-            <button
-              onClick={nextQuestion}
-              disabled={isProgressing}
-              className="py-3 px-4 bg-orange-600 text-white font-medium text-lg rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isProgressing ? '🔄 Đang chuyển...' : 
-               (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
-            </button>
-          </div>
+          <button
+            onClick={nextQuestion}
+            disabled={isProgressing || !canProceed}
+            className="w-full py-3 px-4 bg-orange-600 text-white font-medium text-lg rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isProgressing ? '🔄 Đang chuyển...' : 
+             !canProceed ? `⏳ Đợi ${timeLeft}s` :
+             (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
+          </button>
         )}
       </div>
 
@@ -359,7 +352,8 @@ const AdminPanel = ({ sessionId }) => {
         <h4 className="font-semibold mb-2">📋 Thông tin Quiz:</h4>
         <ul className="space-y-1">
           <li>• Tổng số câu hỏi: {questions.length}</li>
-          <li>• Thời gian mỗi câu: 30 giây</li>
+          <li>• Thời gian mỗi câu: 20 giây cho người chơi</li>
+          <li>• Admin timer: 25 giây trước khi có thể chuyển câu</li>
           <li>• Hệ thống tính điểm: Căn cứ vào thời gian trả lời</li>
           <li>• Session ID: {sessionId}</li>
         </ul>

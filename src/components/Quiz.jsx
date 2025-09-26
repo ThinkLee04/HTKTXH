@@ -13,11 +13,10 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [session, setSession] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(30);
+  const [timeRemaining, setTimeRemaining] = useState(20); // Changed from 30 to 20
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [forceShowResult, setForceShowResult] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +39,6 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
           setAnswerStartTime(sessionData.questionStartTime.toDate());
           setHasAnswered(false);
           setShowResult(false);
-          setForceShowResult(false);
           setSelectedAnswer('');
         }
       } else {
@@ -51,33 +49,6 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
 
     return () => unsubscribe();
   }, [sessionId, onQuizComplete]);
-
-  // Listen to player data changes để detect admin force end
-  useEffect(() => {
-    if (player && sessionId) {
-      const unsubscribePlayer = onSnapshot(
-        doc(db, 'sessions', sessionId, 'players', player.id),
-        (doc) => {
-          const playerData = doc.data();
-          if (playerData && playerData.answers) {
-            const currentAnswer = playerData.answers.find(answer => 
-              answer.questionIndex === session?.currentQuestionIndex &&
-              answer.scoreAwarded === true
-            );
-            
-            // If admin forced scoring, show result immediately
-            if (currentAnswer && hasAnswered && !showResult) {
-              console.log('Admin forced question end detected');
-              setForceShowResult(true);
-              setShowResult(true);
-            }
-          }
-        }
-      );
-      
-      return () => unsubscribePlayer();
-    }
-  }, [player, sessionId, session?.currentQuestionIndex, hasAnswered, showResult]);
 
   // Load câu hỏi hiện tại khi session hoặc questions thay đổi
   useEffect(() => {
@@ -122,7 +93,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     if (!answerStartTime || showResult) return;
 
     const timer = setInterval(() => {
-      const remaining = getTimeRemaining(answerStartTime, 30);
+      const remaining = getTimeRemaining(answerStartTime, 20); // Changed from 30 to 20
       setTimeRemaining(remaining);
 
       // Hết thời gian -> hiện kết quả
@@ -130,7 +101,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
         setShowResult(true);
         // Nếu chưa trả lời thì tự động submit câu trả lời trống
         if (!hasAnswered) {
-          submitAnswer('', 30);
+          submitAnswer('', 20); // Changed from 30 to 20
         }
       }
     }, 1000);
@@ -142,7 +113,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const submitAnswer = async (answer, timeTaken = null) => {
     if (hasAnswered) return;
 
-    const actualTimeTaken = timeTaken || (30 - timeRemaining);
+    const actualTimeTaken = timeTaken || (20 - timeRemaining); // Changed from 30 to 20
     const isCorrect = answer === currentQuestion.correctAnswer;
     const score = calculateScore(isCorrect, actualTimeTaken);
 
@@ -311,19 +282,10 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
                   '⏰ Hết thời gian!'
                 }
               </p>
-              
-              {forceShowResult && (
-                <p className="text-sm text-orange-600 mt-2">
-                  🚨 Admin đã kết thúc câu hỏi - điểm đã được cập nhật
-                </p>
-              )}
             </div>
 
             <div className="text-center text-gray-600">
-              {forceShowResult ? 
-                'Đang chuyển sang câu tiếp theo...' : 
-                'Đang chờ câu hỏi tiếp theo...'
-              }
+              Đang chờ câu hỏi tiếp theo...
             </div>
           </div>
         )}

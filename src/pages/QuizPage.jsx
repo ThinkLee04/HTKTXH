@@ -8,7 +8,6 @@ import ResultScreen from '../components/ResultScreen';
 import Leaderboard from '../components/Leaderboard';
 import AdminPanel from '../components/AdminPanel';
 import WaitingRoom from '../components/WaitingRoom';
-import QuestionTimer from '../components/QuestionTimer';
 import { initializeQuestionsData } from '../utils/initFirestore';
 
 /**
@@ -209,54 +208,50 @@ const QuizPage = () => {
             </div>
           </div>
 
-          {/* Grid layout: Timer + Admin Panel + Leaderboard */}
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-            {/* Question Timer - 1/4 width */}
-            <div className="xl:col-span-1">
-              <QuestionTimer
-                duration={30}
-                isActive={session && !session.isFinished && session.currentQuestionIndex >= 0}
-                questionIndex={session?.currentQuestionIndex || 0}
-                totalQuestions={10}
-                canNext={true}
-                onTimeUp={() => {
-                  console.log('Admin timer: Time up for question', session?.currentQuestionIndex);
-                }}
-                onNextQuestion={async () => {
-                  console.log('Admin timer: Auto next question requested');
-                  if (session && sessionId) {
-                    const nextIndex = session.currentQuestionIndex + 1;
-                    if (nextIndex < 10) {
-                      // Next question
-                      await updateDoc(doc(db, 'sessions', sessionId), {
-                        currentQuestionIndex: nextIndex,
-                        questionStartTime: serverTimestamp()
-                      });
-                    } else {
-                      // End quiz
-                      await updateDoc(doc(db, 'sessions', sessionId), {
-                        isFinished: true
-                      });
-                      await updateDoc(doc(db, 'quiz-rooms', sessionId), {
-                        status: 'finished'
-                      });
-                    }
-                  }
-                }}
-              />
+          {/* Grid layout: Admin Panel + Leaderboard */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Admin Panel - Full width when quiz finished, 2/3 when active */}
+            <div className={session?.isFinished ? "xl:col-span-3" : "xl:col-span-2"}>
+              {session?.isFinished ? (
+                /* Quiz Finished - Show beautiful leaderboard */
+                <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                  <div className="mb-8">
+                    <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                      🎉 Quiz Hoàn Thành! 🎉
+                    </h2>
+                    <p className="text-xl text-gray-600 mb-6">
+                      Cảm ơn tất cả mọi người đã tham gia Quiz Lý thuyết Marx-Lenin
+                    </p>
+                    <div className="text-6xl mb-4">🏆</div>
+                  </div>
+                  
+                  <div className="max-w-4xl mx-auto">
+                    <Leaderboard sessionId={sessionId} isFinal={true} />
+                  </div>
+                  
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <button
+                      onClick={() => navigate('/admin')}
+                      className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      ← Quay lại danh sách rooms
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Quiz Active - Show admin panel */
+                <AdminPanel sessionId={sessionId} />
+              )}
             </div>
             
-            {/* Admin Panel - 2/4 width */}
-            <div className="xl:col-span-2">
-              <AdminPanel sessionId={sessionId} />
-            </div>
-            
-            {/* Leaderboard - 1/4 width */}
-            <div className="xl:col-span-1">
-              <div className="sticky top-4">
-                <Leaderboard sessionId={sessionId} isFinal={false} />
+            {/* Leaderboard - Hide when quiz finished (shown in main area) */}
+            {!session?.isFinished && (
+              <div className="xl:col-span-1">
+                <div className="sticky top-4">
+                  <Leaderboard sessionId={sessionId} isFinal={false} />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -324,7 +319,7 @@ const QuizPage = () => {
 
           {/* Leaderboard sidebar */}
           <div className="lg:col-span-1">
-            {(gameState === 'quiz' || gameState === 'result' || gameState === 'waiting') && sessionId && (
+            {(gameState === 'quiz' || gameState === 'waiting') && sessionId && (
               <div className="sticky top-4">
                 <Leaderboard 
                   sessionId={sessionId}
@@ -341,7 +336,7 @@ const QuizPage = () => {
                 <ul className="space-y-2 text-sm text-gray-600 mb-6">
                   <li>• Nhập tên để tham gia quiz</li>
                   <li>• Chọn room phù hợp</li>
-                  <li>• Mỗi câu hỏi có 30 giây</li>
+                  <li>• Mỗi câu hỏi có 20 giây</li>
                   <li>• Trả lời nhanh để được điểm cao</li>
                   <li>• Xem leaderboard realtime</li>
                   <li>• Quiz có 10 câu hỏi về Marx-Lenin</li>

@@ -19,8 +19,12 @@ const QuestionTimer = ({
   // Reset timer khi question thay đổi
   useEffect(() => {
     if (isActive) {
+      console.log('QuestionTimer: Resetting for question', questionIndex);
       setTimeLeft(duration);
       setIsRunning(true);
+    } else {
+      console.log('QuestionTimer: Inactive, stopping timer');
+      setIsRunning(false);
     }
   }, [questionIndex, duration, isActive]);
 
@@ -29,21 +33,32 @@ const QuestionTimer = ({
     if (!isRunning || !isActive) return;
 
     if (timeLeft <= 0) {
+      console.log('QuestionTimer: Time up! Setting up auto-next...');
       setIsRunning(false);
       onTimeUp && onTimeUp();
       
       // Auto next question sau 2 giây
       const autoNextTimer = setTimeout(() => {
-        if (canNext) {
-          onNextQuestion && onNextQuestion();
+        console.log('QuestionTimer: Executing auto-next question');
+        if (canNext && onNextQuestion) {
+          onNextQuestion();
         }
       }, 2000);
 
-      return () => clearTimeout(autoNextTimer);
+      return () => {
+        console.log('QuestionTimer: Cleaning up auto-next timer');
+        clearTimeout(autoNextTimer);
+      };
     }
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft(prev => {
+        const newTime = prev - 1;
+        if (newTime <= 5 && newTime > 0) {
+          console.log(`QuestionTimer: ${newTime} seconds remaining`);
+        }
+        return newTime;
+      });
     }, 1000);
 
     return () => clearInterval(timer);

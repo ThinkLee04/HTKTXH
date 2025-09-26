@@ -40,7 +40,7 @@ export const formatTimeRemaining = (seconds) => {
  * @param {number} duration - Thời lượng câu hỏi (seconds)
  * @returns {number} Số giây còn lại
  */
-export const getTimeRemaining = (startTime, duration = 30) => {
+export const getTimeRemaining = (startTime, duration = 20) => { // Changed from 30 to 20
   const now = new Date();
   const elapsed = Math.floor((now - startTime) / 1000);
   return Math.max(duration - elapsed, 0);
