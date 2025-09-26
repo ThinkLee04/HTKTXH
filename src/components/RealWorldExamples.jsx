@@ -65,10 +65,10 @@ const RealWorldExamples = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="font-serif-heading text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl">
+          <h2 className=" text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl">
             Liên hệ thực tiễn và ý nghĩa học thuyết
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl font-serif-main text-xl leading-relaxed text-amber-100/85 md:text-2xl">
+          <p className="mx-auto mt-4 max-w-3xl  text-xl leading-relaxed text-amber-100/85 md:text-2xl">
             Ứng dụng học thuyết Mác - Lênin trong việc hiểu và giải thích các hiện tượng kinh tế - xã hội đương đại
           </p>
         </motion.div>
@@ -88,17 +88,17 @@ const RealWorldExamples = () => {
               <div className="relative">
                 <div className="text-center mb-6">
                   <div className="text-6xl mb-4" aria-hidden>{example.icon}</div>
-                  <h3 className="mb-4 font-serif-heading text-2xl font-semibold tracking-wide text-amber-100 md:text-3xl">
+                  <h3 className="mb-4  text-2xl font-semibold tracking-wide text-amber-100 md:text-3xl">
                     {example.title}
                   </h3>
                 </div>
 
-                <p className="mb-6 font-serif-main text-lg leading-relaxed text-amber-100/86">
+                <p className="mb-6  text-lg leading-relaxed text-amber-100/86">
                   {example.description}
                 </p>
 
                 <div className="space-y-3">
-                  <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Điểm nổi bật:</h4>
+                  <h4 className="mb-3  text-lg font-semibold text-amber-300">Điểm nổi bật:</h4>
                   {example.points.map((point, pointIndex) => (
                     <motion.div
                       key={pointIndex}
@@ -143,7 +143,7 @@ const RealWorldExamples = () => {
             className="mx-auto max-w-5xl rounded-[32px] border border-amber-900/35 bg-[#281d15]/88 p-8 shadow-[0_26px_42px_rgba(0,0,0,0.43)] backdrop-blur-[1px] md:p-12"
             style={{ backgroundImage: fiberTexture, backgroundSize: '170px 170px', backgroundBlendMode: 'soft-light' }}
           >
-            <h3 className="mb-8 text-center font-serif-heading text-3xl font-semibold tracking-wide text-amber-200 md:text-4xl">
+            <h3 className="mb-8 text-center  text-3xl font-semibold tracking-wide text-amber-200 md:text-4xl">
               Mối liên hệ với học thuyết Mác - Lênin
             </h3>
             
@@ -156,7 +156,7 @@ const RealWorldExamples = () => {
                 style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
               >
                 <div className="text-4xl mb-4">⚙️</div>
-                <h4 className="mb-3 font-serif-heading text-xl font-semibold text-amber-200">Lực lượng sản xuất</h4>
+                <h4 className="mb-3  text-xl font-semibold text-amber-200">Lực lượng sản xuất</h4>
                 <p className="text-sm leading-relaxed text-amber-100/80">
                   Công nghệ AI, IoT, robotics là những lực lượng sản xuất mới, 
                   thúc đẩy sự phát triển mạnh mẽ của xã hội
@@ -171,7 +171,7 @@ const RealWorldExamples = () => {
                 style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
               >
                 <div className="text-4xl mb-4">🤝</div>
-                <h4 className="mb-3 font-serif-heading text-xl font-semibold text-amber-200">Quan hệ sản xuất</h4>
+                <h4 className="mb-3  text-xl font-semibold text-amber-200">Quan hệ sản xuất</h4>
                 <p className="text-sm leading-relaxed text-amber-100/80">
                   Toàn cầu hóa và mô hình kinh tế mới đang thay đổi 
                   quan hệ sở hữu, phân phối và trao đổi
@@ -186,7 +186,7 @@ const RealWorldExamples = () => {
                 style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
               >
                 <div className="text-4xl mb-4">🏛️</div>
-                <h4 className="mb-3 font-serif-heading text-xl font-semibold text-amber-200">Kiến trúc thượng tầng</h4>
+                <h4 className="mb-3  text-xl font-semibold text-amber-200">Kiến trúc thượng tầng</h4>
                 <p className="text-sm leading-relaxed text-amber-100/80">
                   Chính sách, luật pháp, giáo dục cần thích ứng 
                   với những thay đổi của cơ sở kinh tế
@@ -201,7 +201,7 @@ const RealWorldExamples = () => {
               transition={{ duration: 0.8, delay: 1.6 }}
               className="mt-8 border-t border-amber-900/30 pt-8 text-center"
             >
-              <p className="font-serif-main text-lg leading-relaxed text-amber-100/85 md:text-xl">
+              <p className=" text-lg leading-relaxed text-amber-100/85 md:text-xl">
                 Học thuyết Mác - Lênin không chỉ là lý thuyết quá khứ,
                 mà là <span className="font-semibold text-amber-200">công cụ khoa học</span> để
                 hiểu và định hướng <span className="font-semibold text-amber-200/90">sự phát triển xã hội</span> trong thời đại mới.

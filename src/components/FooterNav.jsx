@@ -1,11 +1,27 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const parchmentTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' fill='%23221610'/%3E%3Cg fill='%23f1d4a4' fill-opacity='0.05'%3E%3Cpath d='M0 0h2v2H0zm120 38h2v1h-2zM70 90h1v2h-1zM205 72h2v1h-2zM42 160h2v2h-2zM182 148h1v2h-1zM95 210h2v1H95zM150 186h2v1h-2z'/%3E%3C/g%3E%3C/svg%3E\")";
 const fiberTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23d6b485' fill-opacity='0.08'%3E%3Crect width='120' height='1' y='28'/%3E%3Crect width='120' height='1' y='76'/%3E%3Crect width='1' height='120' x='34'/%3E%3Crect width='1' height='120' x='86'/%3E%3C/g%3E%3C/svg%3E\")";
 
 const FooterNav = () => {
   const navigate = useNavigate();
+  const [adminPassword, setAdminPassword] = useState('');
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (adminPassword === '987') {
+      navigate('/admin');
+      setAdminPassword('');
+      setShowPasswordInput(false);
+    } else {
+      // Hiệu ứng sai password
+      setAdminPassword('');
+      setTimeout(() => setShowPasswordInput(false), 1000);
+    }
+  };
 
   return (
     <motion.div
@@ -22,7 +38,7 @@ const FooterNav = () => {
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8 font-serif-heading text-3xl font-semibold tracking-wide text-amber-200 md:text-5xl"
+          className="mb-8 text-3xl font-semibold tracking-wide text-amber-200 md:text-5xl"
         >
           Tiếp tục hành trình học tập
         </motion.h2>
@@ -31,7 +47,7 @@ const FooterNav = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mx-auto mb-12 max-w-3xl font-serif-main text-xl leading-relaxed text-amber-100/85 md:text-2xl"
+          className="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-amber-100/85 md:text-2xl"
         >
           Khám phá thêm về cách sử dụng AI trong học tập hoặc thử thách bản thân với bài kiểm tra
         </motion.p>
@@ -48,7 +64,7 @@ const FooterNav = () => {
               boxShadow: "0 22px 40px rgba(0, 0, 0, 0.4)"
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2b1f16]/94 py-6 px-12 font-serif-heading text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
+            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2b1f16]/94 py-6 px-12 text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
             style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></div>
@@ -96,7 +112,7 @@ const FooterNav = () => {
               boxShadow: "0 22px 40px rgba(0, 0, 0, 0.4)"
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2a1e15]/94 py-6 px-12 font-serif-heading text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
+            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2a1e15]/94 py-6 px-12 text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
             style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></div>
@@ -163,9 +179,50 @@ const FooterNav = () => {
               🧠
             </motion.div>
           </div>
-          <p className="mt-4 font-serif-main text-sm tracking-[0.35em] text-amber-300/60">
+          <p className="mt-4 text-sm tracking-[0.35em] text-amber-300/60">
             © 2024 Marx-Lenin Economic Theory Learning Platform
           </p>
+
+          {/* Admin Access */}
+          <div className="mt-6">
+            {!showPasswordInput ? (
+              <button
+                onClick={() => setShowPasswordInput(true)}
+                className="text-xs text-amber-500/50 hover:text-amber-400/70 transition-colors"
+              >
+                •
+              </button>
+            ) : (
+              <motion.form
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                onSubmit={handlePasswordSubmit}
+                className="flex items-center justify-center space-x-2"
+              >
+                <input
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Admin access"
+                  className="w-24 px-2 py-1 text-xs bg-amber-900/20 border border-amber-700/30 rounded text-amber-100 placeholder-amber-500/50 focus:outline-none focus:border-amber-500/50"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="text-xs text-amber-400 hover:text-amber-200 transition-colors"
+                >
+                  →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordInput(false)}
+                  className="text-xs text-amber-500/50 hover:text-amber-400/70 transition-colors"
+                >
+                  ✕
+                </button>
+              </motion.form>
+            )}
+          </div>
         </motion.div>
       </div>
     </motion.div>

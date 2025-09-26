@@ -25,14 +25,14 @@ export const TimelineItem = ({ item }) => {
         className="absolute top-1/4 w-[35vw] rounded-md border border-amber-800/60 bg-[#3a352f]/75 p-8 shadow-2xl shadow-black/50 backdrop-blur-sm"
       >
         {/* [CẢI TIẾN] Dùng font Source Serif Pro cho tiêu đề, rõ ràng và trang trọng */}
-        <h3 className="text-3xl font-bold mb-2 text-amber-300 font-serif-heading">
+        <h3 className="text-3xl font-bold mb-2 text-amber-300">
           {item.title}
         </h3>
         <p className="text-lg font-light italic text-amber-200/70 mb-4">
           {item.period}
         </p>
         {/* [CẢI TIẾN] Tăng kích thước chữ và khoảng cách dòng để dễ đọc hơn từ xa */}
-        <p className="text-lg text-stone-200 leading-relaxed font-serif-main">
+        <p className="text-lg text-stone-200 leading-relaxed">
           {item.desc}
         </p>
       </div>
