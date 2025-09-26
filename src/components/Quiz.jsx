@@ -20,6 +20,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const [showResult, setShowResult] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentAnswerResult, setCurrentAnswerResult] = useState(null); // Lưu kết quả câu trả lời hiện tại
 
   // Vintage paper texture for consistent styling
   const vintagePaperTexture = `
@@ -52,6 +53,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
             setHasAnswered(false);
             setShowResult(false);
             setSelectedAnswer('');
+            setCurrentAnswerResult(null); // Reset kết quả câu trả lời
           }
         } else {
           console.log('No session data found');
@@ -140,6 +142,14 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     const isCorrect = answer === currentQuestion.correctAnswer;
     const score = calculateScore(isCorrect, actualTimeTaken);
 
+    // Lưu kết quả locally để hiển thị sau này
+    setCurrentAnswerResult({
+      answer: answer,
+      isCorrect: isCorrect,
+      score: score,
+      timeTaken: actualTimeTaken
+    });
+
     try {
       const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
       const answerData = {
@@ -169,6 +179,14 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     const actualTimeTaken = timeTaken || (20 - timeRemaining);
     const isCorrect = answer === currentQuestion.correctAnswer;
     const score = calculateScore(isCorrect, actualTimeTaken);
+
+    // Lưu kết quả locally
+    setCurrentAnswerResult({
+      answer: answer,
+      isCorrect: isCorrect,
+      score: score,
+      timeTaken: actualTimeTaken
+    });
 
     try {
       // Nếu chưa submit thì submit
@@ -507,9 +525,9 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
                   transition={{ delay: 0.4 }}
                 >
                   <p className="text-2xl mb-4">
-                    {hasAnswered && player.answers && player.answers.length > session.currentQuestionIndex ? 
-                      (player.answers[session.currentQuestionIndex]?.isCorrect ? 
-                        `🎉 Chính xác! +${player.answers[session.currentQuestionIndex]?.score} điểm` : 
+                    {currentAnswerResult ? 
+                      (currentAnswerResult.isCorrect ? 
+                        `🎉 Chính xác! +${currentAnswerResult.score} điểm` : 
                         '❌ Sai rồi!'
                       ) : 
                       '⏰ Hết thời gian!'
