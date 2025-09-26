@@ -104,34 +104,35 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     }
   };
 
-  // Timer countdown với optimization
+  // Timer countdown - chỉ update thời gian, không hiện kết quả
   useEffect(() => {
-    if (!answerStartTime || showResult) return;
+    if (!answerStartTime) return;
 
     const timer = setInterval(() => {
       const remaining = getTimeRemaining(answerStartTime, 20);
       
-      // Chỉ update nếu có thay đổi thực sự
       setTimeRemaining(prevTime => {
         if (prevTime === remaining) return prevTime;
-        
-        // Hết thời gian -> hiện kết quả (chỉ 1 lần)
-        if (remaining <= 0 && !showResult) {
-          setShowResult(true);
-          // Chỉ submit answer nếu chưa trả lời
-          if (!hasAnswered) {
-            submitAnswer('', 20);
-          }
-        }
-        
         return remaining;
       });
+
+      // Khi hết thời gian, xử lý submit nếu chưa trả lời và hiện kết quả
+      if (remaining <= 0) {
+        clearInterval(timer);
+        if (!hasAnswered) {
+          // Người chưa trả lời -> submit trống và hiện kết quả
+          submitAnswerAndShowResult('', 20);
+        } else {
+          // Người đã trả lời trước đó -> cộng điểm và hiện kết quả
+          awardScoreAndShowResult();
+        }
+      }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [answerStartTime, showResult, hasAnswered]);
+  }, [answerStartTime, hasAnswered]);
 
-  // Submit câu trả lời với delayed scoring và debouncing
+  // Submit câu trả lời - chỉ lưu vào database, không hiện kết quả
   const submitAnswer = useCallback(async (answer, timeTaken = null) => {
     if (hasAnswered) return;
 
@@ -140,8 +141,6 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     const score = calculateScore(isCorrect, actualTimeTaken);
 
     try {
-      setHasAnswered(true); // Set ngay lập tức để tránh duplicate calls
-      
       const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
       const answerData = {
         questionIndex: session.currentQuestionIndex,
@@ -150,50 +149,108 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
         isCorrect: isCorrect,
         score: score,
         answeredAt: new Date(),
-        scoreAwarded: false
       };
 
       await updateDoc(playerRef, {
         answers: arrayUnion(answerData)
       });
 
-      console.log('Answer submitted (score pending):', { answer, isCorrect, score, timeTaken: actualTimeTaken });
-
-      // Delayed scoring với debouncing
-      const remainingTime = Math.max(0, timeRemaining * 1000);
-      
-      setTimeout(async () => {
-        try {
-          const playerDoc = await getDoc(playerRef);
-          const currentPlayerData = playerDoc.data();
-          
-          if (currentPlayerData) {
-            await updateDoc(playerRef, {
-              score: currentPlayerData.score + score
-            });
-            console.log('Score awarded after delay:', { 
-              score, 
-              previousTotal: currentPlayerData.score, 
-              newTotal: currentPlayerData.score + score 
-            });
-          }
-        } catch (error) {
-          console.error('Error awarding delayed score:', error);
-        }
-      }, remainingTime);
+      console.log('Answer submitted (waiting for time up):', { answer, isCorrect, score, timeTaken: actualTimeTaken });
       
     } catch (error) {
       console.error('Error submitting answer:', error);
     }
   }, [hasAnswered, timeRemaining, currentQuestion, session, sessionId, player.id]);
 
+  // Submit và hiện kết quả cùng lúc (chỉ gọi khi hết thời gian)
+  const submitAnswerAndShowResult = useCallback(async (answer, timeTaken = null) => {
+    if (hasAnswered && showResult) return;
+
+    const actualTimeTaken = timeTaken || (20 - timeRemaining);
+    const isCorrect = answer === currentQuestion.correctAnswer;
+    const score = calculateScore(isCorrect, actualTimeTaken);
+
+    try {
+      // Nếu chưa submit thì submit
+      if (!hasAnswered) {
+        setHasAnswered(true);
+        
+        const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
+        const answerData = {
+          questionIndex: session.currentQuestionIndex,
+          answer: answer,
+          timeTaken: actualTimeTaken,
+          isCorrect: isCorrect,
+          score: score,
+          answeredAt: new Date(),
+        };
+
+        await updateDoc(playerRef, {
+          answers: arrayUnion(answerData)
+        });
+
+        // Cộng điểm ngay lập tức
+        const playerDoc = await getDoc(playerRef);
+        const currentPlayerData = playerDoc.data();
+        
+        if (currentPlayerData) {
+          await updateDoc(playerRef, {
+            score: currentPlayerData.score + score
+          });
+        }
+
+        console.log('Answer submitted and score awarded:', { answer, isCorrect, score, timeTaken: actualTimeTaken });
+      }
+      
+      // Hiện kết quả
+      setShowResult(true);
+      
+    } catch (error) {
+      console.error('Error submitting answer and showing result:', error);
+    }
+  }, [hasAnswered, showResult, timeRemaining, currentQuestion, session, sessionId, player.id]);
+
+  // Cộng điểm và hiện kết quả cho người đã submit trước đó
+  const awardScoreAndShowResult = useCallback(async () => {
+    if (showResult) return;
+
+    try {
+      const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
+      const playerDoc = await getDoc(playerRef);
+      const playerData = playerDoc.data();
+      
+      if (playerData && playerData.answers) {
+        const lastAnswer = playerData.answers[playerData.answers.length - 1];
+        if (lastAnswer && lastAnswer.questionIndex === session.currentQuestionIndex) {
+          // Cộng điểm
+          await updateDoc(playerRef, {
+            score: playerData.score + lastAnswer.score
+          });
+          
+          console.log('Score awarded for previous answer:', { 
+            score: lastAnswer.score, 
+            previousTotal: playerData.score, 
+            newTotal: playerData.score + lastAnswer.score 
+          });
+        }
+      }
+      
+      // Hiện kết quả
+      setShowResult(true);
+      
+    } catch (error) {
+      console.error('Error awarding score and showing result:', error);
+    }
+  }, [showResult, sessionId, player.id, session]);
+
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
     if (selectedAnswer && !hasAnswered) {
-      submitAnswer(selectedAnswer);
+      setHasAnswered(true); // Đánh dấu đã trả lời
+      submitAnswer(selectedAnswer); // Chỉ submit, KHÔNG hiện kết quả
       
-      // Hiển thị kết quả ngay lập tức sau khi submit
-      setShowResult(true);
+      // KHÔNG gọi setShowResult(true) ở đây
+      // Kết quả sẽ chỉ hiện khi hết thời gian trong useEffect timer
     }
   };
 
@@ -325,56 +382,94 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
             {currentQuestion.question}
           </motion.h3>
 
-          {/* Form trả lời hoặc kết quả */}
+          {/* Form trả lời, trạng thái chờ, hoặc kết quả */}
           <AnimatePresence mode="wait">
             {!showResult ? (
-              <motion.form 
-                onSubmit={handleAnswerSubmit} 
-                className="space-y-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {currentQuestion.options.map((option, index) => (
-                  <motion.label
-                    key={index}
-                    className={`block p-4 border rounded-xl cursor-pointer transition-all text-lg ${
-                      selectedAnswer === option
-                        ? 'bg-amber-600/20 border-amber-400 text-amber-100 shadow-lg'
-                        : 'bg-amber-50/10 border-amber-700/40 text-amber-200 hover:bg-amber-50/15 hover:border-amber-500/60'
-                    } ${hasAnswered ? 'cursor-not-allowed opacity-60' : 'hover:scale-[1.02]'}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                    whileHover={!hasAnswered ? { scale: 1.02 } : {}}
-                    whileTap={!hasAnswered ? { scale: 0.98 } : {}}
+              <>
+                {!hasAnswered ? (
+                  /* Form trả lời câu hỏi */
+                  <motion.form 
+                    onSubmit={handleAnswerSubmit} 
+                    className="space-y-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
-                    <input
-                      type="radio"
-                      name="answer"
-                      value={option}
-                      checked={selectedAnswer === option}
-                      onChange={(e) => setSelectedAnswer(e.target.value)}
-                      disabled={hasAnswered}
-                      className="mr-4 scale-125 text-amber-500"
-                    />
-                    <span className="font-medium">{String.fromCharCode(65 + index)}.</span> {option}
-                  </motion.label>
-                ))}
+                    {currentQuestion.options.map((option, index) => (
+                      <motion.label
+                        key={index}
+                        className={`block p-4 border rounded-xl cursor-pointer transition-all text-lg ${
+                          selectedAnswer === option
+                            ? 'bg-amber-600/20 border-amber-400 text-amber-100 shadow-lg'
+                            : 'bg-amber-50/10 border-amber-700/40 text-amber-200 hover:bg-amber-50/15 hover:border-amber-500/60'
+                        } hover:scale-[1.02]`}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <input
+                          type="radio"
+                          name="answer"
+                          value={option}
+                          checked={selectedAnswer === option}
+                          onChange={(e) => setSelectedAnswer(e.target.value)}
+                          className="mr-4 scale-125 text-amber-500"
+                        />
+                        <span className="font-medium">{String.fromCharCode(65 + index)}.</span> {option}
+                      </motion.label>
+                    ))}
 
-                <motion.button
-                  type="submit"
-                  disabled={!selectedAnswer || hasAnswered}
-                  className="w-full py-4 px-6 bg-amber-600 text-amber-50 font-bold text-xl rounded-xl hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg mt-8"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  whileHover={!hasAnswered && selectedAnswer ? { scale: 1.02 } : {}}
-                  whileTap={!hasAnswered && selectedAnswer ? { scale: 0.98 } : {}}
-                >
-                  {hasAnswered ? '✅ Đã trả lời' : '🚀 Gửi đáp án'}
-                </motion.button>
-              </motion.form>
+                    <motion.button
+                      type="submit"
+                      disabled={!selectedAnswer}
+                      className="w-full py-4 px-6 bg-amber-600 text-amber-50 font-bold text-xl rounded-xl hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg mt-8"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8 }}
+                      whileHover={selectedAnswer ? { scale: 1.02 } : {}}
+                      whileTap={selectedAnswer ? { scale: 0.98 } : {}}
+                    >
+                      🚀 Gửi đáp án
+                    </motion.button>
+                  </motion.form>
+                ) : (
+                  /* Trạng thái đã submit - đang chờ hết thời gian */
+                  <motion.div 
+                    className="text-center py-12"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                  >
+                    <motion.div
+                      className="text-6xl mb-6"
+                      animate={{ 
+                        rotate: [0, 360],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+                        scale: { duration: 1, repeat: Infinity }
+                      }}
+                    >
+                      ⏳
+                    </motion.div>
+                    <h3 className="text-2xl font-bold text-amber-100 mb-4">Đã gửi đáp án!</h3>
+                    <p className="text-amber-300/80 text-lg mb-6">
+                      Đang chờ hết thời gian để xem kết quả và được cộng điểm...
+                    </p>
+                    <div className="bg-amber-900/30 border border-amber-600/40 rounded-xl p-4 inline-block">
+                      <p className="text-amber-200">
+                        Đáp án bạn chọn: <span className="font-bold text-amber-100">{selectedAnswer}</span>
+                      </p>
+                    </div>
+                    <div className="mt-4 text-amber-300/60">
+                      <p>Thời gian còn lại: <span className="font-bold">{timeRemaining}s</span></p>
+                    </div>
+                  </motion.div>
+                )}
+              </>
             ) : (
               /* Hiển thị kết quả */
               <motion.div 
