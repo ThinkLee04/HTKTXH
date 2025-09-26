@@ -23,8 +23,6 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
   const [joining, setJoining] = useState(false);
   const [error, setError] = useState('');
 
-  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
-
   // Load available rooms
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -126,11 +124,8 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
   if (loading) {
     return (
       <div 
-        className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+        className="flex items-center justify-center p-6"
         style={{ 
-          backgroundImage: vintagePaperTexture, 
-          backgroundBlendMode: "multiply",
-          backgroundColor: "#180b03f5" 
         }}
       >
         <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
@@ -148,11 +143,8 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+      className="flex items-center justify-center p-6 "
       style={{ 
-        backgroundImage: vintagePaperTexture, 
-        backgroundBlendMode: "multiply",
-        backgroundColor: "#180b03f5" 
       }}
     >
       <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>

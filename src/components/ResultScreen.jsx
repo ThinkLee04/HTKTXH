@@ -8,9 +8,7 @@ import Leaderboard from './Leaderboard';
  * @param {string} sessionId - ID của session quiz
  * @param {function} onPlayAgain - Callback khi muốn chơi lại
  */
-const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
-  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
-  
+const ResultScreen = ({ player, sessionId, onPlayAgain }) => {  
   const handlePlayAgain = () => {
     if (onPlayAgain) {
       onPlayAgain();
@@ -55,9 +53,8 @@ const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
     <div 
       className="min-h-screen py-8 px-6 bg-[#231812]"
       style={{ 
-        backgroundImage: vintagePaperTexture, 
         backgroundBlendMode: "multiply",
-        backgroundColor: "#180b03f5" 
+        backgroundColor: "#1e120b" 
       }}
     >
       <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>

@@ -19,13 +19,7 @@ const QuizPage = () => {
   const location = useLocation();
   
   // Vintage paper texture for consistent styling
-  const vintagePaperTexture = `
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-    linear-gradient(135deg, #f5f1eb 0%, #e8dcc0 100%)
-  `;
-  
+    const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
   // State management
   const [gameState, setGameState] = useState('name-room-input'); // 'name-room-input', 'waiting', 'quiz', 'result'
   const [player, setPlayer] = useState(null);
@@ -273,18 +267,21 @@ const QuizPage = () => {
         {/* Main content based on game state */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main quiz area */}
-          <div className="lg:col-span-2">
             {gameState === 'name-room-input' && (
+              <div className="lg:col-span-3">
               <NameAndRoomSelector 
                 onPlayerJoined={handlePlayerJoined}
               />
+              </div>
             )}
 
             {gameState === 'waiting' && player && sessionId && (
+              <div className="lg:col-span-2">
               <WaitingRoom 
                 sessionId={sessionId}
                 player={player}
               />
+              </div>
             )}
 
             {gameState === 'quiz' && player && sessionId && (
@@ -302,7 +299,6 @@ const QuizPage = () => {
                 onPlayAgain={handlePlayAgain}
               />
             )}
-          </div>
 
           {/* Leaderboard sidebar */}
           <div className="lg:col-span-1">
@@ -352,39 +348,6 @@ const QuizPage = () => {
             )}
           </div>
         </div>
-
-        {/* Debug info (development only) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <h4 className="font-semibold text-yellow-800 mb-2">🔧 Debug Info</h4>
-            <div className="text-sm text-yellow-700 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <strong>Game State:</strong> {gameState}
-              </div>
-              <div>
-                <strong>Room ID:</strong> <span className="font-mono text-xs">{sessionId || 'Not selected'}</span>
-              </div>
-              <div>
-                <strong>Player:</strong> {player ? `${player.name} (Score: ${player.score})` : 'None'}
-              </div>
-              <div>
-                <strong>Admin Mode:</strong> {isAdmin ? 'Yes' : 'No'}
-              </div>
-              <div className="col-span-full">
-                <strong>Room Info:</strong> 
-                <br />
-                <div className="bg-yellow-100 p-2 rounded text-xs mt-1">
-                  <div><strong>Current Room:</strong> {sessionId || 'None'}</div>
-                  <div><strong>Player URL:</strong> {window.location.origin}/quiz</div>
-                  <div><strong>Admin Panel:</strong> {window.location.origin}/admin</div>
-                  <div className="text-green-600 mt-1">
-                    ✅ New Room-based System Active!
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

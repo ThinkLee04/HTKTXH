@@ -257,7 +257,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   if (loading) {
     return (
       <div 
-        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        className="flex items-center justify-center bg-[#231812]"
         style={{ 
           backgroundImage: vintagePaperTexture, 
           backgroundBlendMode: "multiply",
@@ -280,7 +280,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   if (!session) {
     return (
       <div 
-        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        className="flex items-center justify-center bg-[#231812]"
         style={{ 
           backgroundImage: vintagePaperTexture, 
           backgroundBlendMode: "multiply",
@@ -303,7 +303,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   if (!currentQuestion) {
     return (
       <div 
-        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        className="flex items-center justify-center bg-[#231812]"
         style={{ 
           backgroundImage: vintagePaperTexture, 
           backgroundBlendMode: "multiply",
@@ -324,7 +324,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+      className="flex items-center justify-center p-6 bg-[#231812]"
       style={{ 
         backgroundImage: vintagePaperTexture, 
         backgroundBlendMode: "multiply",
