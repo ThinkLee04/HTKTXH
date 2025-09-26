@@ -81,7 +81,7 @@ const Leaderboard = ({ sessionId, isFinal = false }) => {
         {isFinal ? '🏆 Bảng Xếp Hạng Cuối Cùng 🏆' : '📊 Bảng Xếp Hạng'}
       </motion.h3>
 
-      <div className="space-y-3">
+      <div className="space-y-3 max-h-[28rem] overflow-y-auto overflow-x-hidden leaderboard-scroll pr-2">
         <AnimatePresence>
           {players.map((player, index) => {
             // Xác định màu cho top 3
