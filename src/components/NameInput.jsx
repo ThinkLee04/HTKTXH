@@ -4,8 +4,8 @@ import { db } from '../firebase';
 
 /**
  * Component cho phép người dùng nhập tên để tham gia quiz
- * @param {function} onPlayerJoined - Callback khi player đã join thành công
- * @param {string} sessionId - ID của session quiz
+ * @param {function} onPlayerJoined - Callback khi player đã nhập tên thành công
+ * @param {string} sessionId - ID của session quiz (optional trong flow mới)
  */
 const NameInput = ({ onPlayerJoined, sessionId }) => {
   const [name, setName] = useState('');
@@ -24,7 +24,22 @@ const NameInput = ({ onPlayerJoined, sessionId }) => {
     setError('');
 
     try {
-      // Tạo player document trong subcollection players của session
+      // Trong flow mới: chỉ tạo player data, chưa join session
+      if (!sessionId) {
+        // Player chưa chọn room - chỉ lưu tên và chuyển sang room selection
+        const playerData = {
+          name: name.trim(),
+          score: 0,
+          answers: [],
+          joinedAt: new Date() // Temporary timestamp
+        };
+
+        console.log('Player name entered:', name.trim());
+        onPlayerJoined(playerData);
+        return;
+      }
+
+      // Legacy flow: join trực tiếp vào session (cho admin hoặc direct session link)
       const playersRef = collection(db, 'sessions', sessionId, 'players');
       const playerDoc = await addDoc(playersRef, {
         name: name.trim(),

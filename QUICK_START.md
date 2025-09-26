@@ -17,10 +17,11 @@
 
 ### 2. Chạy Quiz cho lớp học
 
-**🎯 QUAN TRỌNG: Tất cả học sinh và giảng viên dùng cùng URLs sau:**
+**🎯 QUAN TRỌNG: URLs đơn giản hơn bao giờ hết!**
 
 **Giảng viên (Admin):**
 - Truy cập: `http://localhost:5173/quiz?admin=true`
+- Chọn "Tham gia session hiện tại" hoặc "Tạo quiz mới"
 - Nhập tên nhóm → "Tiến vào Admin Panel"
 - Click "🚀 Bắt đầu Quiz" khi sẵn sàng
 - Sau mỗi 30 giây, click "➡️ Câu tiếp theo"
@@ -28,32 +29,39 @@
 
 **Học sinh (Students):**
 - Truy cập: `http://localhost:5173/quiz`
+- Hệ thống tự động tìm session phù hợp (đang hoạt động hoặc tạo mới)
 - Nhập tên → "Tham gia Quiz"
 - Chờ giảng viên bắt đầu → trả lời câu hỏi
-- Xem kết quả và leaderboard realtime
 
-**✅ Hệ thống tự động kết nối:** 
-- Tất cả người dùng cùng ngày sẽ tự động join vào cùng 1 session
-- Không cần chia sẻ session ID riêng
-- Admin và học sinh dùng URLs khác nhau nhưng cùng session
+**✅ Hệ thống Session Thông minh:** 
+- 🔄 **Multiple sessions/ngày**: `2025-09-26_1`, `2025-09-26_2`, `2025-09-26_3`...
+- 🎯 **Auto-join**: Học sinh tự động join session đang active
+- 👨‍🏫 **Admin choice**: Giảng viên chọn join session hiện tại hoặc tạo mới
+- 🚀 **Smart detection**: Khi session kết thúc, tự động tăng số thứ tự cho session mới
 
 ### 🔍 **Cách test để đảm bảo hoạt động:**
 
-1. **🎯 Phương pháp đúng - Mở 2 tabs:**
-   - Tab 1: `http://localhost:5173/quiz?admin=true` (Giảng viên)
-   - Tab 2: `http://localhost:5173/quiz` (Học sinh)
-   - ✅ **Cả 2 sẽ tự động join cùng session hôm nay**
+**Scenario 1: Quiz đầu tiên trong ngày**
+1. **Tab 1 (Admin)**: `http://localhost:5173/quiz?admin=true`
+   - Sẽ hiện "Tạo Quiz Mới (2025-09-26_1)"
+   - Click "Tạo Quiz Mới" → Nhập tên → "Bắt đầu Quiz"
 
-2. **❌ Sai lầm thường gặp:**
-   - Không dùng URLs có session ID khác nhau
-   - Không tự tạo session ID riêng
-   - Chỉ cần dùng 2 URLs cơ bản ở trên
+2. **Tab 2 (Student)**: `http://localhost:5173/quiz`
+   - Tự động join session `2025-09-26_1`
+   - Nhập tên → Chờ quiz bắt đầu
 
-3. **Luồng test:**
-   - Học sinh: Nhập tên → Thấy "Đang chờ quiz bắt đầu..."
-   - Giảng viên: Nhập tên nhóm → Click "Bắt đầu Quiz"
-   - Học sinh: Tự động chuyển sang màn hình quiz với câu hỏi đầu tiên
-   - ✅ **Cả 2 sẽ thấy cùng session ID trong Debug Info**
+**Scenario 2: Quiz thứ 2 trong ngày (sau khi quiz 1 kết thúc)**
+1. **Tab 1 (Admin)**: `http://localhost:5173/quiz?admin=true`
+   - Sẽ thấy: Session cũ "Đã hoàn thành" + "Tạo Quiz Mới (2025-09-26_2)"
+   - Có thể chọn "Tham gia session cũ" (để xem kết quả) hoặc "Tạo mới"
+
+2. **Tab 2 (Student)**: `http://localhost:5173/quiz`
+   - Tự động join session mới nhất `2025-09-26_2`
+
+**✅ Kiểm tra thành công:**
+- Cả Admin và Student thấy cùng Session ID trong header
+- Debug Info (cuối trang) hiển thị session giống nhau
+- Khi Admin start, Student tự động chuyển từ "waiting" sang "quiz"
 
 ## 📱 URLs quan trọng
 - **Trang chủ**: `http://localhost:5173/`

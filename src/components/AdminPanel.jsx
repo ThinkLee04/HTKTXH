@@ -3,10 +3,11 @@ import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'fir
 import { db } from '../firebase';
 
 /**
- * Component quản trị cho nhóm thuyết trình
- * @param {string} sessionId - ID của session quiz
+ * Component quản trị cho room-based quiz system
+ * @param {string} sessionId - ID của room quiz (tương đương roomId)
  */
 const AdminPanel = ({ sessionId }) => {
+  const [room, setRoom] = useState(null);
   const [session, setSession] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [isStarting, setIsStarting] = useState(false);
@@ -14,7 +15,18 @@ const AdminPanel = ({ sessionId }) => {
   const [adminName, setAdminName] = useState('');
   const [showNameInput, setShowNameInput] = useState(true);
 
-  // Listen to session changes
+  // Listen to room changes
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, 'quiz-rooms', sessionId), (doc) => {
+      if (doc.exists()) {
+        setRoom(doc.data());
+      }
+    });
+
+    return () => unsubscribe();
+  }, [sessionId]);
+
+  // Listen to session changes (quiz data)
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'sessions', sessionId), (doc) => {
       if (doc.exists()) {
@@ -75,18 +87,28 @@ const AdminPanel = ({ sessionId }) => {
     if (!session) {
       setIsStarting(true);
       try {
-        console.log('Starting quiz with sessionId:', sessionId);
+        console.log('Starting quiz with roomId:', sessionId);
         console.log('Questions available:', questions.length);
         
-        // Tạo session mới
+        // Tạo session mới với thông tin room
+        const today = new Date().toISOString().split('T')[0];
         await setDoc(doc(db, 'sessions', sessionId), {
           currentQuestionIndex: 0,
           questionStartTime: serverTimestamp(),
           isFinished: false,
           totalQuestions: questions.length,
           createdBy: adminName,
-          createdAt: serverTimestamp()
+          createdAt: serverTimestamp(),
+          date: today, // Thêm field date để query
+          roomId: sessionId // Link back to room
         });
+
+        // Update room status
+        await updateDoc(doc(db, 'quiz-rooms', sessionId), {
+          status: 'active',
+          startedAt: serverTimestamp()
+        });
+
         console.log('✅ Quiz started successfully!');
       } catch (error) {
         console.error('❌ Error starting quiz:', error);
@@ -111,6 +133,13 @@ const AdminPanel = ({ sessionId }) => {
           isFinished: true,
           finishedAt: serverTimestamp()
         });
+
+        // Update room status
+        await updateDoc(doc(db, 'quiz-rooms', sessionId), {
+          status: 'finished',
+          finishedAt: serverTimestamp()
+        });
+
         console.log('Quiz finished!');
       } else {
         // Chuyển câu hỏi tiếp theo
@@ -134,6 +163,12 @@ const AdminPanel = ({ sessionId }) => {
         questionStartTime: serverTimestamp(),
         isFinished: false
       });
+
+      // Reset room status
+      await updateDoc(doc(db, 'quiz-rooms', sessionId), {
+        status: 'waiting'
+      });
+
       console.log('Quiz reset!');
     } catch (error) {
       console.error('Error resetting quiz:', error);
@@ -184,18 +219,38 @@ const AdminPanel = ({ sessionId }) => {
         <p className="text-gray-600">Điều khiển bởi: {adminName}</p>
       </div>
 
-      {/* Trạng thái hiện tại */}
+      {/* Room và trạng thái hiện tại */}
       <div className="bg-gray-50 p-4 rounded-lg mb-6">
-        <h3 className="font-semibold mb-2">Trạng thái hiện tại:</h3>
-        {!session ? (
-          <div className="text-orange-600">⏳ Chưa bắt đầu - Sẵn sàng để khởi động</div>
-        ) : session.isFinished ? (
-          <div className="text-green-600">✅ Quiz đã hoàn thành</div>
-        ) : (
-          <div className="text-blue-600">
-            🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="font-semibold mb-2">🏠 Room Info:</h3>
+            <div className="text-sm space-y-1">
+              <div><strong>Name:</strong> {room?.name || 'Loading...'}</div>
+              <div><strong>Players:</strong> {room?.currentPlayers || 0}/{room?.maxPlayers || 0}</div>
+              <div><strong>Status:</strong> 
+                <span className={`ml-1 px-2 py-1 rounded text-xs font-medium ${
+                  room?.status === 'waiting' ? 'bg-yellow-100 text-yellow-800' :
+                  room?.status === 'active' ? 'bg-green-100 text-green-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {room?.status?.toUpperCase()}
+                </span>
+              </div>
+            </div>
           </div>
-        )}
+          <div>
+            <h3 className="font-semibold mb-2">🎯 Quiz Status:</h3>
+            {!session ? (
+              <div className="text-orange-600">⏳ Chưa bắt đầu - Sẵn sàng để khởi động</div>
+            ) : session.isFinished ? (
+              <div className="text-green-600">✅ Quiz đã hoàn thành</div>
+            ) : (
+              <div className="text-blue-600">
+                🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Câu hỏi hiện tại */}

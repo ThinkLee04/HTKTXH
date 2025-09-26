@@ -1,11 +1,27 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const parchmentTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' fill='%23221610'/%3E%3Cg fill='%23f1d4a4' fill-opacity='0.05'%3E%3Cpath d='M0 0h2v2H0zm120 38h2v1h-2zM70 90h1v2h-1zM205 72h2v1h-2zM42 160h2v2h-2zM182 148h1v2h-1zM95 210h2v1H95zM150 186h2v1h-2z'/%3E%3C/g%3E%3C/svg%3E\")";
 const fiberTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23d6b485' fill-opacity='0.08'%3E%3Crect width='120' height='1' y='28'/%3E%3Crect width='120' height='1' y='76'/%3E%3Crect width='1' height='120' x='34'/%3E%3Crect width='1' height='120' x='86'/%3E%3C/g%3E%3C/svg%3E\")";
 
 const FooterNav = () => {
   const navigate = useNavigate();
+  const [adminPassword, setAdminPassword] = useState('');
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (adminPassword === '987') {
+      navigate('/admin');
+      setAdminPassword('');
+      setShowPasswordInput(false);
+    } else {
+      // Hiệu ứng sai password
+      setAdminPassword('');
+      setTimeout(() => setShowPasswordInput(false), 1000);
+    }
+  };
 
   return (
     <motion.div
@@ -166,6 +182,47 @@ const FooterNav = () => {
           <p className="mt-4 font-serif-main text-sm tracking-[0.35em] text-amber-300/60">
             © 2024 Marx-Lenin Economic Theory Learning Platform
           </p>
+
+          {/* Admin Access */}
+          <div className="mt-6">
+            {!showPasswordInput ? (
+              <button
+                onClick={() => setShowPasswordInput(true)}
+                className="text-xs text-amber-500/50 hover:text-amber-400/70 transition-colors"
+              >
+                •
+              </button>
+            ) : (
+              <motion.form
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                onSubmit={handlePasswordSubmit}
+                className="flex items-center justify-center space-x-2"
+              >
+                <input
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Admin access"
+                  className="w-24 px-2 py-1 text-xs bg-amber-900/20 border border-amber-700/30 rounded text-amber-100 placeholder-amber-500/50 focus:outline-none focus:border-amber-500/50"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="text-xs text-amber-400 hover:text-amber-200 transition-colors"
+                >
+                  →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordInput(false)}
+                  className="text-xs text-amber-500/50 hover:text-amber-400/70 transition-colors"
+                >
+                  ✕
+                </button>
+              </motion.form>
+            )}
+          </div>
         </motion.div>
       </div>
     </motion.div>
