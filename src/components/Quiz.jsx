@@ -445,7 +445,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
                     <motion.div
                       className="text-6xl mb-6"
                       animate={{ 
-                        rotate: [0, 360],
+                        // rotate: [0, 360],
                         scale: [1, 1.1, 1]
                       }}
                       transition={{ 
