@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { motion, AnimatePresence } from 'framer-motion';
+import Leaderboard from './Leaderboard';
 
 /**
  * Component quản trị với vintage style
@@ -238,7 +239,7 @@ const AdminPanel = ({ sessionId }) => {
     >
       <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
       
-      <div className="relative z-10 max-w-5xl mx-auto">
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div 
           className="text-center mb-8"
@@ -251,6 +252,11 @@ const AdminPanel = ({ sessionId }) => {
           </h2>
           <p className="text-amber-300/80 text-lg">Phòng: <span className="font-mono text-amber-200">{sessionId}</span></p>
         </motion.div>
+
+        {/* Main Layout: 2 columns */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Main Content - Controls and Question */}
+          <div className="xl:col-span-2 space-y-8">
 
         {/* Room và trạng thái hiện tại */}
         <motion.div 
@@ -479,6 +485,59 @@ const AdminPanel = ({ sessionId }) => {
             </ul>
           </div>
         </motion.div>
+          </div>
+
+          {/* Leaderboard Sidebar */}
+          <div className="xl:col-span-1">
+            <motion.div
+              className="sticky top-4"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6">
+                <h3 className="text-xl font-bold text-amber-200 mb-4 font-serif">🏆 Bảng Xếp Hạng</h3>
+                <Leaderboard 
+                  sessionId={sessionId}
+                  isFinal={session?.isFinished || false}
+                  isAdminView={true}
+                />
+              </div>
+
+              {/* Room Stats */}
+              <motion.div
+                className="mt-6 bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.0 }}
+              >
+                <h3 className="text-lg font-bold text-amber-200 mb-3">📊 Thống Kê</h3>
+                <div className="space-y-3 text-amber-100 text-sm">
+                  <div className="flex justify-between">
+                    <span>Người chơi:</span>
+                    <span className="font-semibold text-amber-300">{room?.currentPlayers || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Tiến độ:</span>
+                    <span className="font-semibold text-amber-300">
+                      {session ? `${Math.max(0, session.currentQuestionIndex + 1)}/${questions.length}` : '0/10'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Trạng thái:</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      !session ? 'bg-gray-600/80 text-gray-200' :
+                      session.isFinished ? 'bg-green-600/80 text-green-200' :
+                      'bg-blue-600/80 text-blue-200'
+                    }`}>
+                      {!session ? 'Chờ' : session.isFinished ? 'Hoàn thành' : 'Đang diễn ra'}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

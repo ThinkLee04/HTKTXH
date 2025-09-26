@@ -18,7 +18,13 @@ const QuizPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
+  // Vintage paper texture for consistent styling
+  const vintagePaperTexture = `
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #f5f1eb 0%, #e8dcc0 100%)
+  `;
   
   // State management
   const [gameState, setGameState] = useState('name-room-input'); // 'name-room-input', 'waiting', 'quiz', 'result'

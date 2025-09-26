@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { doc, updateDoc, arrayUnion, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { calculateScore, formatTimeRemaining, getTimeRemaining } from '../utils/score';
@@ -21,36 +21,49 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const [answerStartTime, setAnswerStartTime] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
+  // Vintage paper texture for consistent styling
+  const vintagePaperTexture = `
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, #f5f1eb 0%, #e8dcc0 100%)
+  `;
 
-  // Listen to session changes
+  // Listen to session changes với debouncing để tránh re-render nhiều
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, 'sessions', sessionId), (doc) => {
-      const sessionData = doc.data();
-      if (sessionData) {
-        console.log('Session data received:', sessionData);
-        setSession(sessionData);
-        
-        // Nếu quiz đã hoàn thành
-        if (sessionData.isFinished) {
-          onQuizComplete();
-          return;
-        }
+    let unsubscribe;
+    const debounceTimer = setTimeout(() => {
+      unsubscribe = onSnapshot(doc(db, 'sessions', sessionId), (doc) => {
+        const sessionData = doc.data();
+        if (sessionData) {
+          console.log('Session data received:', sessionData);
+          setSession(sessionData);
+          
+          // Nếu quiz đã hoàn thành
+          if (sessionData.isFinished) {
+            onQuizComplete();
+            return;
+          }
 
-        // Reset trạng thái cho câu hỏi mới
-        if (sessionData.questionStartTime) {
-          setAnswerStartTime(sessionData.questionStartTime.toDate());
-          setHasAnswered(false);
-          setShowResult(false);
-          setSelectedAnswer('');
+          // Reset trạng thái cho câu hỏi mới - chỉ khi thực sự có thay đổi
+          if (sessionData.questionStartTime && 
+              (!answerStartTime || sessionData.questionStartTime.toDate().getTime() !== answerStartTime.getTime())) {
+            setAnswerStartTime(sessionData.questionStartTime.toDate());
+            setHasAnswered(false);
+            setShowResult(false);
+            setSelectedAnswer('');
+          }
+        } else {
+          console.log('No session data found');
         }
-      } else {
-        console.log('No session data found');
-      }
-      setLoading(false);
-    });
+        setLoading(false);
+      });
+    }, 100); // Debounce 100ms
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(debounceTimer);
+      if (unsubscribe) unsubscribe();
+    };
   }, [sessionId, onQuizComplete]);
 
   // Load câu hỏi hiện tại khi session hoặc questions thay đổi
@@ -91,37 +104,44 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     }
   };
 
-  // Timer countdown
+  // Timer countdown với optimization
   useEffect(() => {
     if (!answerStartTime || showResult) return;
 
     const timer = setInterval(() => {
-      const remaining = getTimeRemaining(answerStartTime, 20); // Changed from 30 to 20
-      setTimeRemaining(remaining);
-
-      // Hết thời gian -> hiện kết quả
-      if (remaining <= 0) {
-        setShowResult(true);
-        // Nếu chưa trả lời thì tự động submit câu trả lời trống
-        if (!hasAnswered) {
-          submitAnswer('', 20); // Changed from 30 to 20
+      const remaining = getTimeRemaining(answerStartTime, 20);
+      
+      // Chỉ update nếu có thay đổi thực sự
+      setTimeRemaining(prevTime => {
+        if (prevTime === remaining) return prevTime;
+        
+        // Hết thời gian -> hiện kết quả (chỉ 1 lần)
+        if (remaining <= 0 && !showResult) {
+          setShowResult(true);
+          // Chỉ submit answer nếu chưa trả lời
+          if (!hasAnswered) {
+            submitAnswer('', 20);
+          }
         }
-      }
+        
+        return remaining;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
   }, [answerStartTime, showResult, hasAnswered]);
 
-  // Submit câu trả lời với delayed scoring
-  const submitAnswer = async (answer, timeTaken = null) => {
+  // Submit câu trả lời với delayed scoring và debouncing
+  const submitAnswer = useCallback(async (answer, timeTaken = null) => {
     if (hasAnswered) return;
 
-    const actualTimeTaken = timeTaken || (20 - timeRemaining); // Changed from 30 to 20
+    const actualTimeTaken = timeTaken || (20 - timeRemaining);
     const isCorrect = answer === currentQuestion.correctAnswer;
     const score = calculateScore(isCorrect, actualTimeTaken);
 
     try {
-      // Lưu câu trả lời trước (chưa cộng điểm)
+      setHasAnswered(true); // Set ngay lập tức để tránh duplicate calls
+      
       const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
       const answerData = {
         questionIndex: session.currentQuestionIndex,
@@ -130,32 +150,28 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
         isCorrect: isCorrect,
         score: score,
         answeredAt: new Date(),
-        scoreAwarded: false // Flag để theo dõi đã cộng điểm chưa
+        scoreAwarded: false
       };
 
       await updateDoc(playerRef, {
         answers: arrayUnion(answerData)
-        // Không cộng score ngay lập tức
       });
 
-      setHasAnswered(true);
       console.log('Answer submitted (score pending):', { answer, isCorrect, score, timeTaken: actualTimeTaken });
 
-      // Delayed scoring - chờ cho đến hết 30s mới cộng điểm
-      const remainingTime = Math.max(0, timeRemaining * 1000); // Convert to milliseconds
+      // Delayed scoring với debouncing
+      const remainingTime = Math.max(0, timeRemaining * 1000);
       
       setTimeout(async () => {
         try {
-          // Lấy player data mới nhất trước khi cộng điểm
           const playerDoc = await getDoc(playerRef);
           const currentPlayerData = playerDoc.data();
           
           if (currentPlayerData) {
-            // Cộng điểm vào total score hiện tại
             await updateDoc(playerRef, {
               score: currentPlayerData.score + score
             });
-            console.log('Score awarded after 30s delay:', { 
+            console.log('Score awarded after delay:', { 
               score, 
               previousTotal: currentPlayerData.score, 
               newTotal: currentPlayerData.score + score 
@@ -169,12 +185,15 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     } catch (error) {
       console.error('Error submitting answer:', error);
     }
-  };
+  }, [hasAnswered, timeRemaining, currentQuestion, session, sessionId, player.id]);
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
     if (selectedAnswer && !hasAnswered) {
       submitAnswer(selectedAnswer);
+      
+      // Hiển thị kết quả ngay lập tức sau khi submit
+      setShowResult(true);
     }
   };
 
