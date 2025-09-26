@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { onSnapshot, doc, collection } from 'firebase/firestore';
+import { onSnapshot, doc, collection, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import NameAndRoomSelector from '../components/NameAndRoomSelector';
 import Quiz from '../components/Quiz';
@@ -215,16 +215,33 @@ const QuizPage = () => {
             <div className="xl:col-span-1">
               <QuestionTimer
                 duration={30}
-                isActive={session?.status === 'active'}
+                isActive={session && !session.isFinished && session.currentQuestionIndex >= 0}
                 questionIndex={session?.currentQuestionIndex || 0}
                 totalQuestions={10}
                 canNext={true}
                 onTimeUp={() => {
                   console.log('Admin timer: Time up for question', session?.currentQuestionIndex);
                 }}
-                onNextQuestion={() => {
-                  console.log('Admin timer: Manual next question requested');
-                  // Sẽ được handle bởi AdminPanel
+                onNextQuestion={async () => {
+                  console.log('Admin timer: Auto next question requested');
+                  if (session && sessionId) {
+                    const nextIndex = session.currentQuestionIndex + 1;
+                    if (nextIndex < 10) {
+                      // Next question
+                      await updateDoc(doc(db, 'sessions', sessionId), {
+                        currentQuestionIndex: nextIndex,
+                        questionStartTime: serverTimestamp()
+                      });
+                    } else {
+                      // End quiz
+                      await updateDoc(doc(db, 'sessions', sessionId), {
+                        isFinished: true
+                      });
+                      await updateDoc(doc(db, 'quiz-rooms', sessionId), {
+                        status: 'finished'
+                      });
+                    }
+                  }
                 }}
               />
             </div>

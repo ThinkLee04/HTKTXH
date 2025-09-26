@@ -17,6 +17,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [forceShowResult, setForceShowResult] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,6 +40,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
           setAnswerStartTime(sessionData.questionStartTime.toDate());
           setHasAnswered(false);
           setShowResult(false);
+          setForceShowResult(false);
           setSelectedAnswer('');
         }
       } else {
@@ -49,6 +51,33 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
 
     return () => unsubscribe();
   }, [sessionId, onQuizComplete]);
+
+  // Listen to player data changes để detect admin force end
+  useEffect(() => {
+    if (player && sessionId) {
+      const unsubscribePlayer = onSnapshot(
+        doc(db, 'sessions', sessionId, 'players', player.id),
+        (doc) => {
+          const playerData = doc.data();
+          if (playerData && playerData.answers) {
+            const currentAnswer = playerData.answers.find(answer => 
+              answer.questionIndex === session?.currentQuestionIndex &&
+              answer.scoreAwarded === true
+            );
+            
+            // If admin forced scoring, show result immediately
+            if (currentAnswer && hasAnswered && !showResult) {
+              console.log('Admin forced question end detected');
+              setForceShowResult(true);
+              setShowResult(true);
+            }
+          }
+        }
+      );
+      
+      return () => unsubscribePlayer();
+    }
+  }, [player, sessionId, session?.currentQuestionIndex, hasAnswered, showResult]);
 
   // Load câu hỏi hiện tại khi session hoặc questions thay đổi
   useEffect(() => {
@@ -282,10 +311,19 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
                   '⏰ Hết thời gian!'
                 }
               </p>
+              
+              {forceShowResult && (
+                <p className="text-sm text-orange-600 mt-2">
+                  🚨 Admin đã kết thúc câu hỏi - điểm đã được cập nhật
+                </p>
+              )}
             </div>
 
             <div className="text-center text-gray-600">
-              Đang chờ câu hỏi tiếp theo...
+              {forceShowResult ? 
+                'Đang chuyển sang câu tiếp theo...' : 
+                'Đang chờ câu hỏi tiếp theo...'
+              }
             </div>
           </div>
         )}

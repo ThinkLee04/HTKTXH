@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
@@ -116,6 +116,84 @@ const AdminPanel = ({ sessionId }) => {
       }
     } else {
       console.log('Quiz already started');
+    }
+  };
+
+  const endCurrentQuestion = async () => {
+    if (!session) return;
+
+    setIsProgressing(true);
+    try {
+      console.log('Ending current question and awarding scores...');
+      
+      // Force award scores for current question
+      const playersCollection = collection(db, 'sessions', sessionId, 'players');
+      const playersSnapshot = await getDocs(playersCollection);
+      
+      // Process each player's pending score
+      const currentQuestionIndex = session.currentQuestionIndex;
+      const awardPromises = playersSnapshot.docs.map(async (playerDoc) => {
+        const playerData = playerDoc.data();
+        const answers = playerData.answers || [];
+        
+        // Find answer for current question that hasn't been scored yet
+        const currentAnswer = answers.find(answer => 
+          answer.questionIndex === currentQuestionIndex && 
+          answer.scoreAwarded === false
+        );
+        
+        if (currentAnswer) {
+          // Award the pending score immediately
+          const newScore = playerData.score + currentAnswer.score;
+          await updateDoc(playerDoc.ref, {
+            score: newScore
+          });
+          
+          // Update the answer to mark as scored
+          const updatedAnswers = answers.map(answer => 
+            answer.questionIndex === currentQuestionIndex 
+              ? { ...answer, scoreAwarded: true }
+              : answer
+          );
+          
+          await updateDoc(playerDoc.ref, {
+            answers: updatedAnswers
+          });
+          
+          console.log(`Awarded ${currentAnswer.score} points to ${playerData.name}`);
+        }
+      });
+      
+      await Promise.all(awardPromises);
+      
+      // Wait a bit for players to see correct answer
+      setTimeout(async () => {
+        const nextIndex = session.currentQuestionIndex + 1;
+        
+        if (nextIndex >= questions.length) {
+          // End quiz
+          await updateDoc(doc(db, 'sessions', sessionId), {
+            isFinished: true,
+            finishedAt: serverTimestamp()
+          });
+
+          await updateDoc(doc(db, 'quiz-rooms', sessionId), {
+            status: 'finished',
+            finishedAt: serverTimestamp()
+          });
+        } else {
+          // Next question
+          await updateDoc(doc(db, 'sessions', sessionId), {
+            currentQuestionIndex: nextIndex,
+            questionStartTime: serverTimestamp()
+          });
+        }
+      }, 3000); // 3 seconds delay to show correct answer
+      
+    } catch (error) {
+      console.error('Error ending current question:', error);
+    } finally {
+      setIsProgressing(false);
     }
   };
 
@@ -253,14 +331,26 @@ const AdminPanel = ({ sessionId }) => {
             🔄 Khởi động lại Quiz
           </button>
         ) : (
-          <button
-            onClick={nextQuestion}
-            disabled={isProgressing}
-            className="w-full py-3 px-4 bg-orange-600 text-white font-medium text-lg rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isProgressing ? '🔄 Đang chuyển...' : 
-             (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
-          </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* End Current Question Button */}
+            <button
+              onClick={endCurrentQuestion}
+              disabled={isProgressing}
+              className="py-3 px-4 bg-red-600 text-white font-medium text-lg rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isProgressing ? '🔄 Đang xử lý...' : '⏰ Kết thúc câu hiện tại'}
+            </button>
+            
+            {/* Next Question Button */}
+            <button
+              onClick={nextQuestion}
+              disabled={isProgressing}
+              className="py-3 px-4 bg-orange-600 text-white font-medium text-lg rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isProgressing ? '🔄 Đang chuyển...' : 
+               (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
+            </button>
+          </div>
         )}
       </div>
 
