@@ -106,37 +106,11 @@ const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
                 </div>
               </div>
             )}
-
-            {/* Nút chơi lại */}
-            <button
-              onClick={handlePlayAgain}
-              className="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-            >
-              🔄 Chơi lại
-            </button>
           </div>
         </div>
 
         {/* Bảng xếp hạng cuối cùng */}
         <Leaderboard sessionId={sessionId} isFinal={true} />
-
-        {/* Footer với thông tin về Marx-Lenin */}
-        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              📚 Học thêm về lý thuyết Marx-Lenin
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Quiz này giúp bạn ôn tập kiến thức cơ bản về lý thuyết kinh tế Marx-Lenin. 
-              Để hiểu sâu hơn, hãy tham khảo các tài liệu học tập chính thống.
-            </p>
-            <div className="flex justify-center space-x-4 text-sm text-blue-600">
-              <span>• Nguyên lý kinh tế chính trị Marx-Lenin</span>
-              <span>• Chủ nghĩa xã hội khoa học</span>
-              <span>• Lịch sử Đảng Cộng sản Việt Nam</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

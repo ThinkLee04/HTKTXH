@@ -12,8 +12,7 @@ const AdminPanel = ({ sessionId }) => {
   const [questions, setQuestions] = useState([]);
   const [isStarting, setIsStarting] = useState(false);
   const [isProgressing, setIsProgressing] = useState(false);
-  const [adminName, setAdminName] = useState('');
-  const [showNameInput, setShowNameInput] = useState(true);
+  const [showNameInput, setShowNameInput] = useState(false); // Không hiển thị name input nữa
 
   // Listen to room changes
   useEffect(() => {
@@ -97,7 +96,7 @@ const AdminPanel = ({ sessionId }) => {
           questionStartTime: serverTimestamp(),
           isFinished: false,
           totalQuestions: questions.length,
-          createdBy: adminName,
+          createdBy: 'Admin',
           createdAt: serverTimestamp(),
           date: today, // Thêm field date để query
           roomId: sessionId // Link back to room
@@ -175,48 +174,13 @@ const AdminPanel = ({ sessionId }) => {
     }
   };
 
-  if (showNameInput) {
-    return (
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          🎯 Admin Panel - Quiz Marx-Lenin
-        </h2>
-        
-        <form onSubmit={handleAdminJoin} className="space-y-4">
-          <div>
-            <label htmlFor="adminName" className="block text-sm font-medium text-gray-700 mb-2">
-              Tên nhóm thuyết trình:
-            </label>
-            <input
-              type="text"
-              id="adminName"
-              value={adminName}
-              onChange={(e) => setAdminName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Nhóm 1, Nhóm A, v.v..."
-              maxLength={50}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={!adminName.trim()}
-            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Tiến vào Admin Panel
-          </button>
-        </form>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           🎯 Quiz Control Panel
         </h2>
-        <p className="text-gray-600">Điều khiển bởi: {adminName}</p>
+        <p className="text-gray-600">Room ID: {sessionId}</p>
       </div>
 
       {/* Room và trạng thái hiện tại */}

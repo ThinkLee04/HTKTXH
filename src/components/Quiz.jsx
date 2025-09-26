@@ -109,7 +109,7 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     return () => clearInterval(timer);
   }, [answerStartTime, showResult, hasAnswered]);
 
-  // Submit câu trả lời
+  // Submit câu trả lời với delayed scoring
   const submitAnswer = async (answer, timeTaken = null) => {
     if (hasAnswered) return;
 
@@ -118,22 +118,50 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
     const score = calculateScore(isCorrect, actualTimeTaken);
 
     try {
-      // Cập nhật câu trả lời của player
+      // Lưu câu trả lời trước (chưa cộng điểm)
       const playerRef = doc(db, 'sessions', sessionId, 'players', player.id);
+      const answerData = {
+        questionIndex: session.currentQuestionIndex,
+        answer: answer,
+        timeTaken: actualTimeTaken,
+        isCorrect: isCorrect,
+        score: score,
+        answeredAt: new Date(),
+        scoreAwarded: false // Flag để theo dõi đã cộng điểm chưa
+      };
+
       await updateDoc(playerRef, {
-        answers: arrayUnion({
-          questionIndex: session.currentQuestionIndex,
-          answer: answer,
-          timeTaken: actualTimeTaken,
-          isCorrect: isCorrect,
-          score: score,
-          answeredAt: new Date()
-        }),
-        score: player.score + score
+        answers: arrayUnion(answerData)
+        // Không cộng score ngay lập tức
       });
 
       setHasAnswered(true);
-      console.log('Answer submitted:', { answer, isCorrect, score, timeTaken: actualTimeTaken });
+      console.log('Answer submitted (score pending):', { answer, isCorrect, score, timeTaken: actualTimeTaken });
+
+      // Delayed scoring - chờ cho đến hết 30s mới cộng điểm
+      const remainingTime = Math.max(0, timeRemaining * 1000); // Convert to milliseconds
+      
+      setTimeout(async () => {
+        try {
+          // Lấy player data mới nhất trước khi cộng điểm
+          const playerDoc = await getDoc(playerRef);
+          const currentPlayerData = playerDoc.data();
+          
+          if (currentPlayerData) {
+            // Cộng điểm vào total score hiện tại
+            await updateDoc(playerRef, {
+              score: currentPlayerData.score + score
+            });
+            console.log('Score awarded after 30s delay:', { 
+              score, 
+              previousTotal: currentPlayerData.score, 
+              newTotal: currentPlayerData.score + score 
+            });
+          }
+        } catch (error) {
+          console.error('Error awarding delayed score:', error);
+        }
+      }, remainingTime);
       
     } catch (error) {
       console.error('Error submitting answer:', error);

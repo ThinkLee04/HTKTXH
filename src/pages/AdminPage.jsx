@@ -33,12 +33,9 @@ const AdminPage = () => {
 
   // Listen to rooms changes
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Optimized query with composite index
+    // Load tất cả rooms (không filter theo ngày)
     const roomsQuery = query(
       collection(db, 'quiz-rooms'),
-      where('date', '==', today),
       orderBy('createdAt', 'desc')
     );
 
@@ -161,7 +158,7 @@ const AdminPage = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">🎯 Admin Panel</h1>
-            <p className="text-gray-600 mt-2">Quản lý Quiz Rooms - Marx-Lenin Theory</p>
+                        <p className="text-gray-600 mt-2">Quản lý Quiz Rooms - Marx-Lenin (Tất cả rooms)</p>
           </div>
           <div className="flex space-x-4">
             <button
@@ -285,7 +282,7 @@ const AdminPage = () => {
         {/* Rooms List */}
         <div className="bg-white rounded-lg shadow-lg">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold">Danh Sách Rooms Hôm Nay</h2>
+            <h2 className="text-xl font-semibold">Danh Sách Tất Cả Rooms</h2>
           </div>
           
           {rooms.length === 0 ? (

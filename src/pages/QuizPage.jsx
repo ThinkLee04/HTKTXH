@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { onSnapshot, doc, collection } from 'firebase/firestore';
 import { db } from '../firebase';
-import NameInput from '../components/NameInput';
+import NameAndRoomSelector from '../components/NameAndRoomSelector';
 import Quiz from '../components/Quiz';
 import ResultScreen from '../components/ResultScreen';
 import Leaderboard from '../components/Leaderboard';
 import AdminPanel from '../components/AdminPanel';
-import RoomSelector from '../components/RoomSelector';
 import WaitingRoom from '../components/WaitingRoom';
+import QuestionTimer from '../components/QuestionTimer';
 import { initializeQuestionsData } from '../utils/initFirestore';
-import { getCurrentSessionId } from '../utils/sessionManager';
 
 /**
  * Main Quiz Page - điều phối toàn bộ luồng quiz
@@ -20,11 +19,11 @@ const QuizPage = () => {
   const location = useLocation();
   
   // State management
-  const [gameState, setGameState] = useState('name-input'); // 'name-input', 'room-select', 'waiting', 'quiz', 'result'
+  const [gameState, setGameState] = useState('name-room-input'); // 'name-room-input', 'waiting', 'quiz', 'result'
   const [player, setPlayer] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [session, setSession] = useState(null); // Add session data state
   const [sessionLoading, setSessionLoading] = useState(true);
-  const [showRoomSelector, setShowRoomSelector] = useState(false);
   const [isAdmin] = useState(() => {
     // Check nếu là admin (từ URL params)
     const urlParams = new URLSearchParams(location.search);
@@ -48,8 +47,8 @@ const QuizPage = () => {
           navigate('/admin');
           return;
         } else {
-          // Player cần chọn room
-          setShowRoomSelector(true);
+          // Player flow: sẽ dùng NameAndRoomSelector
+          setSessionLoading(false);
         }
       } catch (error) {
         console.error('Error initializing session:', error);
@@ -77,28 +76,33 @@ const QuizPage = () => {
 
   // Listen to session changes để chuyển state tự động
   useEffect(() => {
-    if (gameState === 'waiting' && player && sessionId) {
+    if (sessionId) {
       const unsubscribe = onSnapshot(doc(db, 'sessions', sessionId), (doc) => {
         const sessionData = doc.data();
         console.log('QuizPage - Session update:', sessionData);
         
         if (sessionData) {
-          // Nếu quiz đã bắt đầu, chuyển sang quiz state
-          if (!sessionData.isFinished && sessionData.currentQuestionIndex >= 0) {
-            console.log('Quiz started, switching to quiz state');
-            setGameState('quiz');
-          }
-          // Nếu quiz đã kết thúc
-          else if (sessionData.isFinished) {
-            console.log('Quiz finished, switching to result state');
-            setGameState('result');
+          setSession(sessionData); // Update session state
+          
+          // Logic chuyển state cho player
+          if (!isAdmin && gameState === 'waiting' && player) {
+            // Nếu quiz đã bắt đầu, chuyển sang quiz state
+            if (!sessionData.isFinished && sessionData.currentQuestionIndex >= 0) {
+              console.log('Quiz started, switching to quiz state');
+              setGameState('quiz');
+            }
+            // Nếu quiz đã kết thúc
+            else if (sessionData.isFinished) {
+              console.log('Quiz finished, switching to result state');
+              setGameState('result');
+            }
           }
         }
       });
 
       return () => unsubscribe();
     }
-  }, [gameState, player, sessionId]);
+  }, [gameState, player, sessionId, isAdmin]);
 
   // Listen to player updates để cập nhật score realtime
   useEffect(() => {
@@ -135,16 +139,12 @@ const QuizPage = () => {
     initData();
   }, []);
 
-  // Handle player joined
-  const handlePlayerJoined = (playerData) => {
+  // Handle player joined from NameAndRoomSelector
+  const handlePlayerJoined = (playerData, roomId) => {
+    console.log('Player joined:', playerData, 'Room:', roomId);
     setPlayer(playerData);
-    if (!isAdmin && !sessionId) {
-      // Player chưa chọn room
-      setGameState('room-select');
-    } else {
-      // Player đã có session hoặc là admin
-      setGameState('waiting');
-    }
+    setSessionId(roomId);
+    setGameState('waiting');
   };
 
   // Handle quiz complete
@@ -155,7 +155,8 @@ const QuizPage = () => {
   // Handle play again
   const handlePlayAgain = () => {
     setPlayer(null);
-    setGameState('name-input');
+    setSessionId(null);
+    setGameState('name-room-input');
   };
 
   // Handle back to home
@@ -180,7 +181,7 @@ const QuizPage = () => {
   if (isAdmin) {
     return (
       <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-full mx-auto px-4">
           {/* Back button */}
           <button
             onClick={handleBackToHome}
@@ -208,11 +209,37 @@ const QuizPage = () => {
             </div>
           </div>
 
-          <AdminPanel sessionId={sessionId} />
-          
-          {/* Mini leaderboard for admin */}
-          <div className="mt-8">
-            <Leaderboard sessionId={sessionId} isFinal={false} />
+          {/* Grid layout: Timer + Admin Panel + Leaderboard */}
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+            {/* Question Timer - 1/4 width */}
+            <div className="xl:col-span-1">
+              <QuestionTimer
+                duration={30}
+                isActive={session?.status === 'active'}
+                questionIndex={session?.currentQuestionIndex || 0}
+                totalQuestions={10}
+                canNext={true}
+                onTimeUp={() => {
+                  console.log('Admin timer: Time up for question', session?.currentQuestionIndex);
+                }}
+                onNextQuestion={() => {
+                  console.log('Admin timer: Manual next question requested');
+                  // Sẽ được handle bởi AdminPanel
+                }}
+              />
+            </div>
+            
+            {/* Admin Panel - 2/4 width */}
+            <div className="xl:col-span-2">
+              <AdminPanel sessionId={sessionId} />
+            </div>
+            
+            {/* Leaderboard - 1/4 width */}
+            <div className="xl:col-span-1">
+              <div className="sticky top-4">
+                <Leaderboard sessionId={sessionId} isFinal={false} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -225,7 +252,7 @@ const QuizPage = () => {
         {/* Header với room info */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Quiz Lý Thuyết Marx-Lenin 🏛️
+            Học thuyết kinh tế xã hội
           </h1>
           {sessionId && (
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
@@ -248,18 +275,9 @@ const QuizPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main quiz area */}
           <div className="lg:col-span-2">
-            {gameState === 'name-input' && (
-              <NameInput 
+            {gameState === 'name-room-input' && (
+              <NameAndRoomSelector 
                 onPlayerJoined={handlePlayerJoined}
-                sessionId={sessionId}
-              />
-            )}
-
-            {gameState === 'room-select' && player && (
-              <RoomSelector 
-                playerName={player.name}
-                playerData={player}
-                onRoomSelect={handleRoomSelected}
               />
             )}
 
@@ -311,30 +329,6 @@ const QuizPage = () => {
                   <li>• Xem leaderboard realtime</li>
                   <li>• Quiz có 10 câu hỏi về Marx-Lenin</li>
                 </ul>
-
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-4">
-                  <h4 className="font-semibold text-blue-800 mb-2">
-                    🎯 Hệ thống Room Mới
-                  </h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Admin tạo rooms từ trang quản lý</li>
-                    <li>• Player chọn room để tham gia</li>
-                    <li>• Mỗi room có giới hạn người tham gia</li>
-                    <li>• Real-time updates cho tất cả thành viên</li>
-                  </ul>
-                </div>
-
-                <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                  <h4 className="font-semibold text-orange-800 mb-2">
-                    🎯 Dành cho giảng viên
-                  </h4>
-                  <p className="text-sm text-orange-700 mb-3">
-                    Truy cập Admin Panel để quản lý rooms:
-                  </p>
-                  <p className="text-xs text-orange-600 mt-2">
-                    💡 Nhập mật khẩu "987" ở footer để truy cập admin
-                  </p>
-                </div>
               </div>
             )}
 
