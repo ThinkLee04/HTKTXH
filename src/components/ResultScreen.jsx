@@ -73,7 +73,7 @@ const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-6 font-serif">
+              <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-6">
                 🎯 Hoàn Thành Quiz!
               </h1>
             </motion.div>

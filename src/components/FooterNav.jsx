@@ -38,7 +38,7 @@ const FooterNav = () => {
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8 font-serif-heading text-3xl font-semibold tracking-wide text-amber-200 md:text-5xl"
+          className="mb-8 text-3xl font-semibold tracking-wide text-amber-200 md:text-5xl"
         >
           Tiếp tục hành trình học tập
         </motion.h2>
@@ -47,7 +47,7 @@ const FooterNav = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mx-auto mb-12 max-w-3xl font-serif-main text-xl leading-relaxed text-amber-100/85 md:text-2xl"
+          className="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-amber-100/85 md:text-2xl"
         >
           Khám phá thêm về cách sử dụng AI trong học tập hoặc thử thách bản thân với bài kiểm tra
         </motion.p>
@@ -64,7 +64,7 @@ const FooterNav = () => {
               boxShadow: "0 22px 40px rgba(0, 0, 0, 0.4)"
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2b1f16]/94 py-6 px-12 font-serif-heading text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
+            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2b1f16]/94 py-6 px-12 text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
             style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></div>
@@ -112,7 +112,7 @@ const FooterNav = () => {
               boxShadow: "0 22px 40px rgba(0, 0, 0, 0.4)"
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2a1e15]/94 py-6 px-12 font-serif-heading text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
+            className="group relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2a1e15]/94 py-6 px-12 text-[1.15rem] font-semibold uppercase tracking-[0.18em] text-amber-100 shadow-[0_26px_42px_rgba(0,0,0,0.43)] transition-all duration-300"
             style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></div>
@@ -179,7 +179,7 @@ const FooterNav = () => {
               🧠
             </motion.div>
           </div>
-          <p className="mt-4 font-serif-main text-sm tracking-[0.35em] text-amber-300/60">
+          <p className="mt-4 text-sm tracking-[0.35em] text-amber-300/60">
             © 2024 Marx-Lenin Economic Theory Learning Platform
           </p>
 

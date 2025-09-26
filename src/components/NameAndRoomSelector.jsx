@@ -158,7 +158,7 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
         {/* Header */}
         <div className="text-center mb-8">
           <motion.h2 
-            className="text-4xl font-bold text-amber-100 mb-2 font-serif"
+            className="text-4xl font-bold text-amber-100 mb-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}

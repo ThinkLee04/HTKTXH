@@ -37,7 +37,7 @@ const TestAdminPage = () => {
         >
           <div className="p-8 text-center">
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold text-amber-900 mb-4 font-serif"
+              className="text-4xl md:text-5xl font-bold text-amber-900 mb-4"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -81,7 +81,7 @@ const TestAdminPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.8 }}
             >
-              <h3 className="font-bold text-amber-900 mb-4 font-serif text-xl">📊 Debug Information</h3>
+              <h3 className="font-bold text-amber-900 mb-4 text-xl">📊 Debug Information</h3>
               <div className="text-sm text-amber-800 text-left space-y-2">
                 <div className="flex items-center justify-between p-2 bg-white/50 rounded-lg">
                   <strong>Current URL:</strong> 

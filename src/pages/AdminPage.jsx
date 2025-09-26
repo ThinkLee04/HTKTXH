@@ -227,7 +227,7 @@ const AdminPage = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-2 font-serif">🎯 Admin Panel</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-2">🎯 Admin Panel</h1>
             <p className="text-amber-300/80 text-lg">Quản lý Quiz Rooms - Marx-Lenin</p>
           </div>
           <motion.div 
@@ -322,7 +322,7 @@ const AdminPage = () => {
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={e => e.stopPropagation()}
               >
-                <h3 className="text-2xl font-bold text-amber-900 mb-6 font-serif">📝 Tạo Room Mới</h3>
+                <h3 className="text-2xl font-bold text-amber-900 mb-6">📝 Tạo Room Mới</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -398,7 +398,7 @@ const AdminPage = () => {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-amber-900 font-serif">{room.name}</h3>
+                  <h3 className="text-xl font-bold text-amber-900">{room.name}</h3>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     room.status === 'active' 
                       ? 'bg-green-200/80 text-green-800' 
@@ -462,7 +462,7 @@ const AdminPage = () => {
           >
             <div className="bg-gradient-to-br from-amber-100/90 to-amber-200/80 backdrop-blur-sm rounded-2xl p-12 max-w-md mx-auto shadow-xl border border-amber-300/30">
               <span className="text-6xl mb-4 block">🏛️</span>
-              <h3 className="text-2xl font-bold text-amber-900 mb-3 font-serif">Chưa có Room nào</h3>
+              <h3 className="text-2xl font-bold text-amber-900 mb-3">Chưa có Room nào</h3>
               <p className="text-amber-700 mb-6">Tạo room đầu tiên để bắt đầu quiz Marx-Lenin!</p>
               <button
                 onClick={() => setShowCreateForm(true)}

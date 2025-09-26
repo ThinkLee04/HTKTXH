@@ -231,7 +231,7 @@ const QuizPage = () => {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4 font-serif">
+          <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4">
             Học thuyết kinh tế xã hội
           </h1>
           <p className="text-amber-300/80 text-lg mb-4">Marx-Lenin</p>
@@ -285,19 +285,23 @@ const QuizPage = () => {
             )}
 
             {gameState === 'quiz' && player && sessionId && (
+              <div className="lg:col-span-2">
               <Quiz 
                 player={player}
                 sessionId={sessionId}
                 onQuizComplete={handleQuizComplete}
               />
+              </div>
             )}
 
             {gameState === 'result' && player && sessionId && (
+              <div className="lg:col-span-2">
               <ResultScreen 
                 player={player}
                 sessionId={sessionId}
                 onPlayAgain={handlePlayAgain}
               />
+              </div>
             )}
 
           {/* Leaderboard sidebar */}

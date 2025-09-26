@@ -16,7 +16,7 @@ const SuperstructureInfrastructure = () => {
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-16 text-center font-serif-heading text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl"
+          className="mb-16 text-center text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl"
         >
           Mối quan hệ giữa Cơ sở hạ tầng và Kiến trúc thượng tầng
         </motion.h2>
@@ -37,29 +37,29 @@ const SuperstructureInfrastructure = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <h3 className="mb-4 font-serif-heading text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
+              <h3 className="mb-4 text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
                 KIẾN TRÚC THƯỢNG TẦNG
               </h3>
             </div>
             
             <div className="space-y-5 text-amber-100/95">
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Chính trị:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Chính trị:</h4>
                 <p className="text-sm text-amber-100/85">Nhà nước, chính quyền, các tổ chức chính trị</p>
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Pháp luật:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Pháp luật:</h4>
                 <p className="text-sm text-amber-100/85">Hệ thống luật pháp, quy tắc xã hội</p>
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Tư tưởng:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Tư tưởng:</h4>
                 <p className="text-sm text-amber-100/85">Triết học, tôn giáo, đạo đức, nghệ thuật</p>
               </div>
 
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Giáo dục:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Giáo dục:</h4>
                 <p className="text-sm text-amber-100/85">Hệ thống giáo dục, văn hóa</p>
               </div>
             </div>
@@ -112,7 +112,7 @@ const SuperstructureInfrastructure = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-20 text-center font-serif-heading text-lg tracking-[0.3em] text-amber-300"
+              className="mt-20 text-center text-lg tracking-[0.3em] text-amber-300"
             >
               TƯƠNG TÁC QUA LẠI
             </motion.p>
@@ -133,29 +133,29 @@ const SuperstructureInfrastructure = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                 </svg>
               </div>
-              <h3 className="mb-4 font-serif-heading text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
+              <h3 className="mb-4 text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
                 CƠ SỞ HẠ TẦNG
               </h3>
             </div>
             
             <div className="space-y-5 text-amber-100/95">
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Lực lượng sản xuất:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Lực lượng sản xuất:</h4>
                 <p className="text-sm text-amber-100/85">Con người lao động và công cụ lao động</p>
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Quan hệ sản xuất:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Quan hệ sản xuất:</h4>
                 <p className="text-sm text-amber-100/85">Quan hệ sở hữu, phân phối, trao đổi</p>
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Kinh tế:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Kinh tế:</h4>
                 <p className="text-sm text-amber-100/85">Cơ sở vật chất, công nghệ sản xuất</p>
               </div>
 
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture,  backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Tài nguyên:</h4>
+                <h4 className="mb-3 text-lg font-semibold text-amber-300">Tài nguyên:</h4>
                 <p className="text-sm text-amber-100/85">Tài nguyên thiên nhiên, lao động</p>
               </div>
             </div>
@@ -173,7 +173,7 @@ const SuperstructureInfrastructure = () => {
             className="rounded-[32px] border border-amber-900/35 bg-[#291e16]/85 p-8 shadow-[0_24px_40px_rgba(0,0,0,0.38)] backdrop-blur-[1px] md:p-10"
             style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}
           >
-            <p className="font-serif-main text-lg leading-relaxed text-amber-100/88 md:text-xl">
+            <p className=" text-lg leading-relaxed text-amber-100/88 md:text-xl">
               <span className="font-semibold text-amber-300">Cơ sở hạ tầng</span> quyết định và chi phối{' '}
               <span className="font-semibold text-amber-300/80">kiến trúc thượng tầng</span>,
               nhưng kiến trúc thượng tầng cũng có tác động trở lại,

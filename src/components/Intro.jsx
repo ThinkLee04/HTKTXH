@@ -53,7 +53,7 @@ const Intro = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="mb-6 text-3xl font-bold tracking-wide text-amber-100 md:text-5xl lg:text-6xl font-serif-heading"
+          className="mb-6 text-3xl font-bold tracking-wide text-amber-100 md:text-5xl lg:text-6xl "
         >
           Học thuyết Kinh tế - Xã hội
         </motion.h1>
@@ -75,8 +75,8 @@ const Intro = () => {
           className="relative mx-auto w-full max-w-3xl rounded-[28px] border border-amber-900/45 bg-[#2b2018]/92 p-8 shadow-[0_16px_32px_rgba(0,0,0,0.35)] backdrop-blur-[1px] md:p-12"
         >
           {/* [NỔI BẬT] Dấu trích dẫn trang trí */}
-          <span className="absolute left-4 top-2 font-serif-heading text-7xl text-amber-200/10 select-none">“</span>
-          <span className="absolute right-4 bottom-[-1.5rem] font-serif-heading text-7xl text-amber-200/10 select-none">”</span>
+          <span className="absolute left-4 top-2  text-7xl text-amber-200/10 select-none">“</span>
+          <span className="absolute right-4 bottom-[-1.5rem]  text-7xl text-amber-200/10 select-none">”</span>
 
           <div className="pointer-events-none absolute -inset-3 rounded-[30px] border border-amber-900/30 opacity-40"></div>
           
@@ -86,7 +86,7 @@ const Intro = () => {
               animate={{ width: "auto" }}
               transition={{ duration: 3, delay: 2.5 }}
               // [NỔI BẬT] Đổi màu chữ và thêm hiệu ứng tỏa sáng
-              className="font-serif-main text-lg md:text-xl lg:text-2xl font-semibold tracking-wide text-amber-100"
+              className="text-lg md:text-xl lg:text-2xl font-semibold tracking-wide text-amber-100"
               style={{
                 textShadow: '0 0 10px rgba(233, 199, 90, 0.5)',
                 overflow: 'hidden',

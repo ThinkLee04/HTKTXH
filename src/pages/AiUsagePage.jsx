@@ -97,7 +97,7 @@ const AiUsagePage = () => {
               </svg>
             </motion.div>
 
-            <h1 className="mb-6 font-serif text-4xl font-bold tracking-wide text-amber-200 md:text-6xl">
+            <h1 className="mb-6 text-4xl font-bold tracking-wide text-amber-200 md:text-6xl">
               Liêm chính học thuật với AI
             </h1>
             
@@ -125,17 +125,17 @@ const AiUsagePage = () => {
               <div className="relative">
                 <div className="text-center mb-6">
                   <div className="text-5xl mb-4">{principle.icon}</div>
-                    <h3 className="mb-4 font-serif-heading text-2xl font-semibold tracking-wide text-amber-100 md:text-3xl">
+                    <h3 className="mb-4 text-2xl font-semibold tracking-wide text-amber-100 md:text-3xl">
                     {principle.title}
                   </h3>
                 </div>
 
-                  <p className="mb-6 font-serif-main text-lg leading-relaxed text-amber-100/85">
+                  <p className="mb-6 text-lg leading-relaxed text-amber-100/85">
                   {principle.description}
                 </p>
 
                 <div className="space-y-3">
-                    <h4 className="mb-4 font-serif-heading text-lg font-semibold text-amber-300">Ví dụ thực hành:</h4>
+                    <h4 className="mb-4 text-lg font-semibold text-amber-300">Ví dụ thực hành:</h4>
                   {principle.examples.map((example, exampleIndex) => (
                     <motion.div
                       key={exampleIndex}
@@ -181,7 +181,7 @@ const AiUsagePage = () => {
               className="mx-auto max-w-5xl rounded-2xl border border-amber-900/35 bg-[#2b2018]/90 backdrop-blur-sm p-8 shadow-2xl md:p-12"
               style={{ backgroundImage: fiberTexture, backgroundSize: '170px 170px', backgroundBlendMode: 'soft-light' }}
             >
-              <h3 className="mb-8 text-center font-serif-heading text-3xl font-semibold tracking-wide text-amber-200 md:text-4xl">
+              <h3 className="mb-8 text-center text-3xl font-semibold tracking-wide text-amber-200 md:text-4xl">
               Nguyên tắc vàng khi sử dụng AI
             </h3>
             
@@ -202,7 +202,7 @@ const AiUsagePage = () => {
                     style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
                 >
                   <div className="text-4xl mb-3">{item.emoji}</div>
-                    <p className="font-serif-heading text-amber-100 font-semibold">{item.text}</p>
+                    <p className="text-amber-100 font-semibold">{item.text}</p>
                 </motion.div>
               ))}
             </div>
@@ -214,7 +214,7 @@ const AiUsagePage = () => {
               transition={{ duration: 0.8, delay: 1.5 }}
                 className="mt-8 border-t border-amber-900/35 pt-8 text-center"
             >
-                <p className="font-serif-main text-lg leading-relaxed text-amber-100/85 md:text-xl">
+                <p className="text-lg leading-relaxed text-amber-100/85 md:text-xl">
                   Hãy nhớ: <span className="font-semibold text-amber-200">AI là đối tác</span>, không phải là
                   <span className="font-semibold text-amber-200/90"> thay thế</span> cho việc học tập của bạn.
                   Sự kết hợp thông minh giữa <span className="font-semibold text-amber-200/90">công nghệ và tri thức con người</span>
@@ -235,7 +235,7 @@ const AiUsagePage = () => {
             onClick={() => navigate('/')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-              className="relative overflow-hidden rounded-full border border-amber-900/40 bg-[#2b1f16]/94 px-8 py-4 font-serif-heading text-sm font-semibold tracking-[0.3em] text-amber-100 shadow-[0_22px_36px_rgba(0,0,0,0.4)] transition-all duration-300"
+              className="relative overflow-hidden rounded-full border border-amber-900/40 bg-[#2b1f16]/94 px-8 py-4 text-sm font-semibold tracking-[0.3em] text-amber-100 shadow-[0_22px_36px_rgba(0,0,0,0.4)] transition-all duration-300"
               style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <span className="pointer-events-none absolute inset-0 opacity-25 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></span>
@@ -246,7 +246,7 @@ const AiUsagePage = () => {
             onClick={() => navigate('/quiz')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-              className="relative overflow-hidden rounded-full border border-amber-900/40 bg-[#2a1e15]/94 px-8 py-4 font-serif-heading text-sm font-semibold tracking-[0.3em] text-amber-100 shadow-[0_22px_36px_rgba(0,0,0,0.4)] transition-all duration-300"
+              className="relative overflow-hidden rounded-full border border-amber-900/40 bg-[#2a1e15]/94 px-8 py-4 text-sm font-semibold tracking-[0.3em] text-amber-100 shadow-[0_22px_36px_rgba(0,0,0,0.4)] transition-all duration-300"
               style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
           >
             <span className="pointer-events-none absolute inset-0 opacity-25 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></span>

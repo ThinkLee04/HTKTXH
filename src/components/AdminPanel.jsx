@@ -247,7 +247,7 @@ const AdminPanel = ({ sessionId }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4 font-serif">
+          <h2 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4">
             🎯 Bảng Điều Khiển Quiz
           </h2>
           <p className="text-amber-300/80 text-lg">Phòng: <span className="font-mono text-amber-200">{sessionId}</span></p>
@@ -496,45 +496,13 @@ const AdminPanel = ({ sessionId }) => {
               transition={{ delay: 0.8 }}
             >
               <div className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-amber-200 mb-4 font-serif">🏆 Bảng Xếp Hạng</h3>
+                <h3 className="text-xl font-bold text-amber-200 mb-4">🏆 Bảng Xếp Hạng</h3>
                 <Leaderboard 
                   sessionId={sessionId}
                   isFinal={session?.isFinished || false}
                   isAdminView={true}
                 />
               </div>
-
-              {/* Room Stats */}
-              <motion.div
-                className="mt-6 bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0 }}
-              >
-                <h3 className="text-lg font-bold text-amber-200 mb-3">📊 Thống Kê</h3>
-                <div className="space-y-3 text-amber-100 text-sm">
-                  <div className="flex justify-between">
-                    <span>Người chơi:</span>
-                    <span className="font-semibold text-amber-300">{room?.currentPlayers || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Tiến độ:</span>
-                    <span className="font-semibold text-amber-300">
-                      {session ? `${Math.max(0, session.currentQuestionIndex + 1)}/${questions.length}` : '0/10'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Trạng thái:</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      !session ? 'bg-gray-600/80 text-gray-200' :
-                      session.isFinished ? 'bg-green-600/80 text-green-200' :
-                      'bg-blue-600/80 text-blue-200'
-                    }`}>
-                      {!session ? 'Chờ' : session.isFinished ? 'Hoàn thành' : 'Đang diễn ra'}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
             </motion.div>
           </div>
         </div>

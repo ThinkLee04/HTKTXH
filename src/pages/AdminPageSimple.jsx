@@ -60,7 +60,7 @@ const AdminPageSimple = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-2 font-serif">🎯 Admin Panel</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-2">🎯 Admin Panel</h1>
             <p className="text-amber-300/80 text-lg">Simplified version for debugging</p>
           </div>
           <motion.div 

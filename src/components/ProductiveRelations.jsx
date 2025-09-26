@@ -16,7 +16,7 @@ const ProductiveRelations = () => {
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-16 text-center font-serif-heading text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl"
+          className="mb-16 text-center text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl"
         >
           Lực lượng sản xuất và Quan hệ sản xuất
         </motion.h2>
@@ -37,14 +37,14 @@ const ProductiveRelations = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h3 className="mb-4 font-serif-heading text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
+              <h3 className="mb-4 text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
                 LỰC LƯỢNG SẢN XUẤT
               </h3>
             </div>
             
             <div className="space-y-5 text-amber-100/95">
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Con người lao động:</h4>
+                <h4 className="mb-3 classtext-lg font-semibold text-amber-300">Con người lao động:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Trình độ kỹ năng</li>
                   <li>• Kinh nghiệm sản xuất</li>
@@ -54,7 +54,7 @@ const ProductiveRelations = () => {
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Tư liệu lao động:</h4>
+                <h4 className="mb-3  text-lg font-semibold text-amber-300">Tư liệu lao động:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Máy móc, thiết bị</li>
                   <li>• Công nghệ, kỹ thuật</li>
@@ -64,7 +64,7 @@ const ProductiveRelations = () => {
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#251a13]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Khoa học - Kỹ thuật:</h4>
+                <h4 className="mb-3  text-lg font-semibold text-amber-300">Khoa học - Kỹ thuật:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Nghiên cứu khoa học</li>
                   <li>• Ứng dụng công nghệ</li>
@@ -126,7 +126,7 @@ const ProductiveRelations = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="text-center font-serif-heading text-lg tracking-[0.3em] text-amber-300"
+              className="text-center  text-lg tracking-[0.3em] text-amber-300"
             >
               MÂU THUẪN & THỐNG NHẤT
             </motion.p>
@@ -147,14 +147,14 @@ const ProductiveRelations = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 className="mb-4 font-serif-heading text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
+              <h3 className="mb-4  text-2xl font-bold uppercase tracking-[0.18em] text-amber-200 md:text-3xl">
                 QUAN HỆ SẢN XUẤT
               </h3>
             </div>
             
             <div className="space-y-5 text-amber-100/95">
               <div className="rounded-2xl border border-amber-900/40 bg-[#241911]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Quan hệ sở hữu:</h4>
+                <h4 className="mb-3  text-lg font-semibold text-amber-300">Quan hệ sở hữu:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Sở hữu tư liệu sản xuất</li>
                   <li>• Quyền kiểm soát</li>
@@ -163,7 +163,7 @@ const ProductiveRelations = () => {
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#241911]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Quan hệ trao đổi:</h4>
+                <h4 className="mb-3  text-lg font-semibold text-amber-300">Quan hệ trao đổi:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Mua bán hàng hóa</li>
                   <li>• Thị trường lao động</li>
@@ -172,7 +172,7 @@ const ProductiveRelations = () => {
               </div>
               
               <div className="rounded-2xl border border-amber-900/40 bg-[#241911]/85 p-5" style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}>
-                <h4 className="mb-3 font-serif-heading text-lg font-semibold text-amber-300">Quan hệ phân phối:</h4>
+                <h4 className="mb-3  text-lg font-semibold text-amber-300">Quan hệ phân phối:</h4>
                 <ul className="space-y-1 text-sm text-amber-100/90">
                   <li>• Phân phối sản phẩm</li>
                   <li>• Phân phối thu nhập</li>
@@ -194,11 +194,11 @@ const ProductiveRelations = () => {
             className="rounded-[32px] border border-amber-900/35 bg-[#291e16]/85 p-8 shadow-[0_24px_40px_rgba(0,0,0,0.38)] backdrop-blur-[1px] md:p-10"
             style={{ backgroundImage: fiberTexture, backgroundSize: '180px 180px', backgroundBlendMode: 'soft-light' }}
           >
-            <p className="mb-4 font-serif-main text-lg leading-relaxed text-amber-100/88 md:text-xl">
+            <p className="mb-4  text-lg leading-relaxed text-amber-100/88 md:text-xl">
               <span className="font-semibold text-amber-300">Lực lượng sản xuất</span> có xu hướng phát triển liên tục,
               trong khi <span className="font-semibold text-amber-300/80">quan hệ sản xuất</span> tương đối ổn định.
             </p>
-            <p className="font-serif-main text-lg leading-relaxed text-amber-100/80 md:text-xl">
+            <p className=" text-lg leading-relaxed text-amber-100/80 md:text-xl">
               Khi lực lượng sản xuất phát triển mạnh mà quan hệ sản xuất cũ không phù hợp,
               sẽ dẫn đến <span className="font-semibold text-amber-200">mâu thuẫn</span> và
               thúc đẩy <span className="font-semibold text-amber-200">biến đổi xã hội</span>.

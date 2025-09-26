@@ -63,7 +63,7 @@ const WaitingRoom = ({ sessionId, player }) => {
             <div className="text-8xl mb-4">⏳</div>
           </motion.div>
           <motion.h2 
-            className="text-4xl font-bold text-amber-100 mb-4 font-serif"
+            className="text-4xl font-bold text-amber-100 mb-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
