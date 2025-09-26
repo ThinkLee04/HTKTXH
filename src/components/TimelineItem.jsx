@@ -35,9 +35,6 @@ export const TimelineItem = ({ item }) => {
         <p className="text-lg text-stone-200 leading-relaxed font-serif-main">
           {item.desc}
         </p>
-        {/* <div
-          className="absolute top-2/3 -translate-y-1/2 w-4 h-4 transform rotate-45 left-[-8.5px] border-b border-r border-amber-800/60 bg-[#3a352f]"
-        ></div> */}
       </div>
     </motion.div>
   );

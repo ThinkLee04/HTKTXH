@@ -103,7 +103,7 @@ const Timeline = () => {
 
       <div className="relative z-30">
         {timelineData.map((item, index) => (
-          <section key={index} className="relative h-screen flex items-center">
+          <section key={index} className="relative h-screen flex">
             <TimelineMarker />
             {/* Truyền `item` vào như cũ */}
             <TimelineItem item={item} />
