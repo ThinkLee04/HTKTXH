@@ -15,6 +15,9 @@ const AdminPanel = ({ sessionId }) => {
   const [showNameInput, setShowNameInput] = useState(false); // Không hiển thị name input nữa
   const [timeLeft, setTimeLeft] = useState(0); // Timer countdown
   const [canProceed, setCanProceed] = useState(false); // Can proceed to next question
+  const [showAnswers, setShowAnswers] = useState(false); // Control answer visibility
+  const [hideQuestion, setHideQuestion] = useState(false); // Hide question during transition
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1); // Track question changes
 
   // Listen to room changes
   useEffect(() => {
@@ -33,26 +36,48 @@ const AdminPanel = ({ sessionId }) => {
       if (doc.exists()) {
         const sessionData = doc.data();
         setSession(sessionData);
-        
-        // Start countdown when new question starts
-        if (sessionData && sessionData.questionStartTime && !sessionData.isFinished) {
-          setTimeLeft(25); // Start 25s countdown
-          setCanProceed(false);
-        }
       }
     });
 
     return () => unsubscribe();
   }, [sessionId]);
 
+  // Handle question changes with smooth transition
+  useEffect(() => {
+    if (session && session.currentQuestionIndex !== undefined) {
+      if (currentQuestionIndex !== -1 && session.currentQuestionIndex !== currentQuestionIndex) {
+        // Question changed - hide current question first
+        setHideQuestion(true);
+        setShowAnswers(false);
+        
+        // Show new question after delay
+        setTimeout(() => {
+          setCurrentQuestionIndex(session.currentQuestionIndex);
+          setTimeLeft(25);
+          setCanProceed(false);
+          setHideQuestion(false);
+        }, 500);
+      } else if (currentQuestionIndex === -1) {
+        // First question - no transition needed
+        setCurrentQuestionIndex(session.currentQuestionIndex);
+        setTimeLeft(25);
+        setCanProceed(false);
+        setShowAnswers(false);
+      }
+    }
+  }, [session?.currentQuestionIndex, currentQuestionIndex]);
+
   // Countdown timer effect
   useEffect(() => {
-    if (session && session.questionStartTime && !session.isFinished && timeLeft > 0) {
+    if (session && !session.isFinished && timeLeft > 0 && !hideQuestion) {
       const timer = setInterval(() => {
         setTimeLeft(prev => {
           const newTime = prev - 1;
           if (newTime <= 0) {
             setCanProceed(true); // Enable proceed button
+            setShowAnswers(true); // Show answers when timer reaches 0
+          } else if (newTime === 5) {
+            setShowAnswers(true); // Show answers at 5 seconds remaining
           }
           return Math.max(0, newTime);
         });
@@ -60,7 +85,7 @@ const AdminPanel = ({ sessionId }) => {
 
       return () => clearInterval(timer);
     }
-  }, [session, timeLeft]);
+  }, [session, timeLeft, hideQuestion]);
 
   // Load questions from Firestore
   useEffect(() => {
@@ -272,7 +297,7 @@ const AdminPanel = ({ sessionId }) => {
       </div>
 
       {/* Câu hỏi hiện tại */}
-      {session && !session.isFinished && (
+      {session && !session.isFinished && !hideQuestion && (
         <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
           <h3 className="font-semibold text-blue-800 mb-2">
             Câu {session.currentQuestionIndex + 1}: 
@@ -289,7 +314,7 @@ const AdminPanel = ({ sessionId }) => {
                 <div 
                   key={index} 
                   className={`p-2 rounded border ${
-                    timeLeft <= 5 && option === questions[session.currentQuestionIndex]?.correctAnswer
+                    showAnswers && option === questions[session.currentQuestionIndex]?.correctAnswer
                       ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
                       : 'bg-white border-gray-200 text-gray-700'
                   }`}
@@ -300,8 +325,8 @@ const AdminPanel = ({ sessionId }) => {
             </div>
           </div>
 
-          {/* Hiển thị đáp án đúng chỉ khi timeLeft <= 5 */}
-          {timeLeft <= 5 && (
+          {/* Hiển thị đáp án đúng chỉ khi showAnswers = true */}
+          {showAnswers && (
             <div className="text-sm bg-green-50 p-3 rounded border border-green-200">
               <strong className="text-green-700">🎯 Đáp án đúng:</strong>
               <span className="ml-2 text-green-600 font-semibold">
@@ -314,6 +339,16 @@ const AdminPanel = ({ sessionId }) => {
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Loading state during question transition */}
+      {session && !session.isFinished && hideQuestion && (
+        <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <span className="ml-3 text-blue-600">Đang chuyển câu hỏi...</span>
+          </div>
         </div>
       )}
 
