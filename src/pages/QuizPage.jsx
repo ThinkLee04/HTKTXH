@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { onSnapshot, doc, collection, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { motion } from 'framer-motion';
 import NameAndRoomSelector from '../components/NameAndRoomSelector';
 import Quiz from '../components/Quiz';
 import ResultScreen from '../components/ResultScreen';
@@ -11,11 +12,13 @@ import WaitingRoom from '../components/WaitingRoom';
 import { initializeQuestionsData } from '../utils/initFirestore';
 
 /**
- * Main Quiz Page - điều phối toàn bộ luồng quiz
+ * Main Quiz Page với vintage style - điều phối toàn bộ luồng quiz
  */
 const QuizPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
   
   // State management
   const [gameState, setGameState] = useState('name-room-input'); // 'name-room-input', 'waiting', 'quiz', 'result'
@@ -165,13 +168,25 @@ const QuizPage = () => {
 
   if (!dataInitialized || sessionLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">
+      <div 
+        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        style={{ 
+          backgroundImage: vintagePaperTexture, 
+          backgroundBlendMode: "multiply",
+          backgroundColor: "#180b03f5" 
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+        <motion.div 
+          className="relative z-10 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-amber-400 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-amber-300 text-lg">
             {!dataInitialized ? 'Đang khởi tạo dữ liệu quiz...' : 'Đang tìm session phù hợp...'}
           </p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -179,112 +194,78 @@ const QuizPage = () => {
   // Admin panel
   if (isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-full mx-auto px-4">
-          {/* Back button */}
-          <button
-            onClick={handleBackToHome}
-            className="mb-4 px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Về trang chủ
-          </button>
-
-          {/* Header với session info */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Quiz Lý Thuyết Marx-Lenin 🏛️
-            </h1>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
-              <div className="bg-green-100 px-4 py-2 rounded-lg border border-green-300">
-                <span className="text-sm font-medium text-green-700">
-                  📅 Room: <code className="bg-green-200 px-2 py-1 rounded text-xs">{sessionId}</code>
-                </span>
-              </div>
-              <div className="bg-blue-100 px-4 py-2 rounded-lg border border-blue-300">
-                <span className="text-sm font-medium text-blue-700">
-                  👨‍🏫 Admin Mode
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Grid layout: Admin Panel + Leaderboard */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Admin Panel - Full width when quiz finished, 2/3 when active */}
-            <div className={session?.isFinished ? "xl:col-span-3" : "xl:col-span-2"}>
-              {session?.isFinished ? (
-                /* Quiz Finished - Show beautiful leaderboard */
-                <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-                  <div className="mb-8">
-                    <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                      🎉 Quiz Hoàn Thành! 🎉
-                    </h2>
-                    <p className="text-xl text-gray-600 mb-6">
-                      Cảm ơn tất cả mọi người đã tham gia Quiz Lý thuyết Marx-Lenin
-                    </p>
-                    <div className="text-6xl mb-4">🏆</div>
-                  </div>
-                  
-                  <div className="max-w-4xl mx-auto">
-                    <Leaderboard sessionId={sessionId} isFinal={true} />
-                  </div>
-                  
-                  <div className="mt-8 pt-6 border-t border-gray-200">
-                    <button
-                      onClick={() => navigate('/admin')}
-                      className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      ← Quay lại danh sách rooms
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Quiz Active - Show admin panel */
-                <AdminPanel sessionId={sessionId} />
-              )}
-            </div>
-            
-            {/* Leaderboard - Hide when quiz finished (shown in main area) */}
-            {!session?.isFinished && (
-              <div className="xl:col-span-1">
-                <div className="sticky top-4">
-                  <Leaderboard sessionId={sessionId} isFinal={false} />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+      <div>
+        {/* AdminPanel component đã có background riêng */}
+        <AdminPanel sessionId={sessionId} />
+        
+        {/* Floating back button */}
+        <motion.button
+          onClick={handleBackToHome}
+          className="fixed top-6 left-6 z-50 bg-amber-600/90 backdrop-blur-sm text-amber-50 px-4 py-2 rounded-xl font-semibold hover:bg-amber-500 transition-all shadow-lg border border-amber-500/50"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          ← Về trang chủ
+        </motion.button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div 
+      className="min-h-screen py-8 px-6 bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+      
+      <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header với room info */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4 font-serif">
             Học thuyết kinh tế xã hội
           </h1>
+          <p className="text-amber-300/80 text-lg mb-4">Marx-Lenin</p>
+          
           {sessionId && (
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
-              <div className="bg-green-100 px-4 py-2 rounded-lg border border-green-300">
-                <span className="text-sm font-medium text-green-700">
-                  📅 Room: <code className="bg-green-200 px-2 py-1 rounded text-xs">{sessionId}</code>
+            <motion.div 
+              className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="bg-amber-600/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-500/40">
+                <span className="text-amber-200 font-medium">
+                  🏛️ Phòng: <code className="bg-amber-500/20 px-2 py-1 rounded font-mono text-amber-300">{sessionId}</code>
                 </span>
               </div>
-            </div>
+            </motion.div>
           )}
-          <button
+          
+          <motion.button
             onClick={handleBackToHome}
-            className="mt-2 px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
+            className="mt-2 px-6 py-2 bg-amber-600/80 backdrop-blur-sm text-amber-50 font-semibold rounded-xl hover:bg-amber-500 transition-all border border-amber-500/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             ← Về trang chủ
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {/* Main content based on game state */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main quiz area */}
           <div className="lg:col-span-2">
             {gameState === 'name-room-input' && (

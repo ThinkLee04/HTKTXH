@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const parchmentTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' fill='%23221610'/%3E%3Cg fill='%23f1d4a4' fill-opacity='0.05'%3E%3Cpath d='M0 0h2v2H0zm120 38h2v1h-2zM70 90h1v2h-1zM205 72h2v1h-2zM42 160h2v2h-2zM182 148h1v2h-1zM95 210h2v1H95zM150 186h2v1h-2z'/%3E%3C/g%3E%3C/svg%3E\")";
-const fiberTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23d6b485' fill-opacity='0.08'%3E%3Crect width='120' height='1' y='28'/%3E%3Crect width='120' height='1' y='76'/%3E%3Crect width='1' height='120' x='34'/%3E%3Crect width='1' height='120' x='86'/%3E%3C/g%3E%3C/svg%3E\")";
-
 const AiUsagePage = () => {
   const navigate = useNavigate();
+
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
 
   const principles = [
     {
@@ -55,16 +54,18 @@ const AiUsagePage = () => {
   ];
 
   return (
-    <div
-      className="relative min-h-screen overflow-hidden bg-[#22170f]"
-      style={{ backgroundImage: parchmentTexture, backgroundSize: '220px 220px', backgroundBlendMode: 'multiply' }}
+    <div 
+      className="min-h-screen bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[#e6cba1]/12 mix-blend-soft-light"></div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(188,143,95,0.18),_transparent_70%)]"></div>
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
       {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(200,153,103,0.22),transparent_60%)]"></div>
-        <div className="relative z-10 container mx-auto px-6 py-20">
+      <div className="relative z-10">
+        <div className="container mx-auto px-6 py-20">
           <motion.button
             onClick={() => navigate('/')}
             initial={{ opacity: 0, x: -50 }}
@@ -72,12 +73,12 @@ const AiUsagePage = () => {
             transition={{ duration: 0.8 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="mb-8 flex items-center space-x-2 font-serif-main text-amber-200/70 transition-colors duration-300 hover:text-amber-100"
+            className="mb-8 flex items-center space-x-2 text-amber-200 hover:text-amber-100 transition-colors duration-300"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <span className="text-lg">Quay lại trang chính</span>
+            <span className="text-lg font-semibold">Quay lại trang chính</span>
           </motion.button>
 
           <motion.div
@@ -89,19 +90,18 @@ const AiUsagePage = () => {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-[#70502d]/85 shadow-[0_26px_42px_rgba(0,0,0,0.45)]"
-              style={{ backgroundImage: fiberTexture, backgroundSize: '150px 150px', backgroundBlendMode: 'soft-light' }}
+              className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-amber-600/80 shadow-2xl"
             >
                 <svg className="h-12 w-12 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </motion.div>
 
-              <h1 className="mb-6 font-serif-heading text-4xl font-semibold tracking-wide text-amber-200 md:text-6xl">
+            <h1 className="mb-6 font-serif text-4xl font-bold tracking-wide text-amber-200 md:text-6xl">
               Liêm chính học thuật với AI
             </h1>
             
-              <p className="mx-auto max-w-3xl font-serif-main text-xl leading-relaxed text-amber-100/80 md:text-2xl">
+            <p className="mx-auto max-w-3xl text-xl leading-relaxed text-amber-100/80 md:text-2xl">
               Hướng dẫn sử dụng trí tuệ nhân tạo một cách đúng đắn và có trách nhiệm trong học tập
             </p>
           </motion.div>
@@ -109,8 +109,8 @@ const AiUsagePage = () => {
       </div>
 
       {/* Main Content */}
-        <div className="relative z-10 container mx-auto px-6 py-16">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="relative z-10 container mx-auto px-6 py-16">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-2">
           {principles.map((principle, index) => (
             <motion.div
               key={index}
@@ -118,7 +118,7 @@ const AiUsagePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="relative overflow-hidden rounded-[30px] border border-amber-900/40 bg-[#2b1f16]/94 p-8 shadow-[0_26px_42px_rgba(0,0,0,0.45)]"
+              className="relative overflow-hidden rounded-2xl border border-amber-900/40 bg-[#2b2018]/90 backdrop-blur-sm p-8 shadow-2xl"
               style={{ backgroundImage: fiberTexture, backgroundSize: '160px 160px', backgroundBlendMode: 'soft-light' }}
             >
               <div className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light" style={{ backgroundImage: fiberTexture }}></div>
@@ -178,7 +178,7 @@ const AiUsagePage = () => {
           className="mt-20"
         >
             <div
-              className="mx-auto max-w-5xl rounded-[32px] border border-amber-900/35 bg-[#281d15]/88 p-8 shadow-[0_26px_42px_rgba(0,0,0,0.43)] backdrop-blur-[1px] md:p-12"
+              className="mx-auto max-w-5xl rounded-2xl border border-amber-900/35 bg-[#2b2018]/90 backdrop-blur-sm p-8 shadow-2xl md:p-12"
               style={{ backgroundImage: fiberTexture, backgroundSize: '170px 170px', backgroundBlendMode: 'soft-light' }}
             >
               <h3 className="mb-8 text-center font-serif-heading text-3xl font-semibold tracking-wide text-amber-200 md:text-4xl">

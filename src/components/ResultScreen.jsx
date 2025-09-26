@@ -1,13 +1,15 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import Leaderboard from './Leaderboard';
 
 /**
- * Component hiển thị màn hình kết quả cuối quiz
+ * Component hiển thị màn hình kết quả với vintage style
  * @param {object} player - Thông tin người chơi
  * @param {string} sessionId - ID của session quiz
  * @param {function} onPlayAgain - Callback khi muốn chơi lại
  */
 const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
   
   const handlePlayAgain = () => {
     if (onPlayAgain) {
@@ -50,67 +52,122 @@ const ResultScreen = ({ player, sessionId, onPlayAgain }) => {
   const rankMessage = getPlayerRankMessage();
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div 
+      className="min-h-screen py-8 px-6 bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+      
+      <div className="relative z-10 max-w-4xl mx-auto">
         {/* Header kết quả cá nhân */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <motion.div 
+          className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-8 mb-8 shadow-2xl"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">
-              🎯 Quiz Hoàn Thành!
-            </h1>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            >
+              <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-6 font-serif">
+                🎯 Hoàn Thành Quiz!
+              </h1>
+            </motion.div>
             
-            <div className="mb-6">
-              <div className="text-xl text-gray-700 mb-2">
-                Chào <span className="font-semibold">{player.name}</span>!
+            <motion.div 
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="text-2xl text-amber-200 mb-4">
+                Chúc mừng <span className="font-bold text-amber-100">{player.name}</span>!
               </div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">
+              <motion.div 
+                className="text-6xl font-bold text-amber-300 mb-4"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+              >
                 {player.score} điểm
-              </div>
-              <div className={`text-lg font-semibold ${rankMessage.color}`}>
+              </motion.div>
+              <div className={`text-2xl font-bold mb-2 ${rankMessage.color === 'text-green-600' ? 'text-green-400' : 
+                rankMessage.color === 'text-blue-600' ? 'text-blue-400' : 
+                rankMessage.color === 'text-orange-600' ? 'text-orange-400' : 'text-red-400'}`}>
                 {rankMessage.message}
               </div>
-              <div className="text-gray-600 mt-2">
+              <div className="text-amber-300/80 text-lg">
                 {rankMessage.description}
               </div>
-            </div>
+            </motion.div>
 
             {/* Thống kê chi tiết */}
             {player.answers && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <div className="text-2xl font-bold text-green-600">
+              <motion.div 
+                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <motion.div 
+                  className="bg-green-900/30 border border-green-600/40 p-6 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl font-bold text-green-300 mb-2">
                     {player.answers.filter(a => a.isCorrect).length}
                   </div>
-                  <div className="text-sm text-green-700">Câu đúng</div>
-                </div>
+                  <div className="text-green-200 font-medium">Câu đúng</div>
+                </motion.div>
                 
-                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                  <div className="text-2xl font-bold text-red-600">
+                <motion.div 
+                  className="bg-red-900/30 border border-red-600/40 p-6 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl font-bold text-red-300 mb-2">
                     {player.answers.filter(a => !a.isCorrect).length}
                   </div>
-                  <div className="text-sm text-red-700">Câu sai</div>
-                </div>
+                  <div className="text-red-200 font-medium">Câu sai</div>
+                </motion.div>
                 
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <div className="text-2xl font-bold text-blue-600">
+                <motion.div 
+                  className="bg-blue-900/30 border border-blue-600/40 p-6 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl font-bold text-blue-300 mb-2">
                     {Math.round(player.answers.reduce((sum, a) => sum + a.timeTaken, 0) / player.answers.length)}s
                   </div>
-                  <div className="text-sm text-blue-700">Thời gian TB</div>
-                </div>
+                  <div className="text-blue-200 font-medium">Thời gian TB</div>
+                </motion.div>
                 
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                  <div className="text-2xl font-bold text-purple-600">
+                <motion.div 
+                  className="bg-purple-900/30 border border-purple-600/40 p-6 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl font-bold text-purple-300 mb-2">
                     {Math.round(player.score / player.answers.filter(a => a.isCorrect).length) || 0}
                   </div>
-                  <div className="text-sm text-purple-700">Điểm TB/câu</div>
-                </div>
-              </div>
+                  <div className="text-purple-200 font-medium">Điểm TB/câu</div>
+                </motion.div>
+              </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Bảng xếp hạng cuối cùng */}
-        <Leaderboard sessionId={sessionId} isFinal={true} />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 0.6 }}
+        >
+          <Leaderboard sessionId={sessionId} isFinal={true} />
+        </motion.div>
       </div>
     </div>
   );

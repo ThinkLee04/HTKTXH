@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import { joinPlayerToSession } from '../utils/joinSession';
 
 /**
- * Combined Name Input + Room Selector
+ * Combined Name Input + Room Selector with Vintage Style
  */
 const NameAndRoomSelector = ({ onPlayerJoined }) => {
   const [name, setName] = useState('');
@@ -22,6 +22,8 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [error, setError] = useState('');
+
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
 
   // Load available rooms
   useEffect(() => {
@@ -123,113 +125,184 @@ const NameAndRoomSelector = ({ onPlayerJoined }) => {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Đang tải danh sách rooms...</p>
-        </div>
+      <div 
+        className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+        style={{ 
+          backgroundImage: vintagePaperTexture, 
+          backgroundBlendMode: "multiply",
+          backgroundColor: "#180b03f5" 
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+        <motion.div 
+          className="relative z-10 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-amber-400 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-amber-300">Đang tải danh sách phòng...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-        🎯 Tham gia Quiz Marx-Lenin
-      </h2>
-
-      <form onSubmit={handleJoinQuiz} className="space-y-6">
-        {/* Name Input */}
-        <div>
-          <label htmlFor="playerName" className="block text-sm font-medium text-gray-700 mb-2">
-            Tên của bạn *
-          </label>
-          <input
-            type="text"
-            id="playerName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Nhập tên của bạn..."
-            maxLength={50}
-          />
+    <div 
+      className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-full max-w-2xl"
+      >
+        {/* Header */}
+        <div className="text-center mb-8">
+          <motion.h2 
+            className="text-4xl font-bold text-amber-100 mb-2 font-serif"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            🎯 Tham gia Quiz
+          </motion.h2>
+          <motion.p 
+            className="text-amber-300/80 text-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            Marx-Lenin
+          </motion.p>
         </div>
 
-        {/* Room Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Chọn room để tham gia *
-          </label>
-          
-          {rooms.length === 0 ? (
-            <div className="p-4 bg-gray-50 rounded-lg text-center text-gray-500">
-              <p>Chưa có room nào khả dụng. Vui lòng chờ admin tạo room.</p>
-            </div>
-          ) : (
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {rooms.map((room) => (
-                <motion.div
-                  key={room.id}
-                  whileHover={{ scale: 1.02 }}
-                  className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                    selectedRoom?.id === room.id 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-200 hover:border-gray-300'
-                  } ${isRoomFull(room) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  onClick={() => !isRoomFull(room) && setSelectedRoom(room)}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-gray-800">{room.name}</h3>
-                    {getRoomStatusBadge(room)}
-                  </div>
-                  
-                  {room.description && (
-                    <p className="text-sm text-gray-600 mb-2">{room.description}</p>
-                  )}
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">
-                      👥 {room.currentPlayers}/{room.maxPlayers} người chơi
-                    </span>
-                    <span className="text-gray-400 text-xs">
-                      🕒 {new Date(room.createdAt?.toDate()).toLocaleTimeString()}
-                    </span>
-                  </div>
-
-                  {isRoomFull(room) && (
-                    <div className="mt-2 text-red-600 text-sm font-medium">
-                      Room đã đầy
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
-        )}
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={!name.trim() || !selectedRoom || joining || isRoomFull(selectedRoom)}
-          className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        {/* Main Form */}
+        <motion.form 
+          onSubmit={handleJoinQuiz} 
+          className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-8 shadow-2xl space-y-6"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
         >
-          {joining ? (
-            <span className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              Đang tham gia...
-            </span>
-          ) : (
-            '🚀 Tham gia Quiz'
+          {/* Name Input */}
+          <div>
+            <label htmlFor="playerName" className="block text-amber-200 font-semibold mb-3 text-lg">
+              📝 Tên của bạn *
+            </label>
+            <input
+              type="text"
+              id="playerName"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-4 bg-amber-50/10 border border-amber-700/40 rounded-xl text-amber-100 placeholder-amber-400/60 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-transparent transition-all"
+              placeholder="Nhập tên của bạn..."
+              maxLength={50}
+            />
+          </div>
+
+          {/* Room Selection */}
+          <div>
+            <label className="block text-amber-200 font-semibold mb-3 text-lg">
+              🏛️ Chọn phòng tham gia *
+            </label>
+            
+            {rooms.length === 0 ? (
+              <div className="p-6 bg-amber-900/20 border border-amber-700/40 rounded-xl text-center text-amber-300/80">
+                <p className="text-lg mb-2">📭</p>
+                <p>Chưa có phòng nào khả dụng</p>
+                <p className="text-sm mt-1 text-amber-400/60">Vui lòng chờ admin tạo phòng</p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {rooms.map((room) => (
+                  <motion.div
+                    key={room.id}
+                    whileHover={!isRoomFull(room) ? { scale: 1.02 } : {}}
+                    whileTap={!isRoomFull(room) ? { scale: 0.98 } : {}}
+                    className={`p-4 border rounded-xl cursor-pointer transition-all ${
+                      selectedRoom?.id === room.id 
+                        ? 'border-amber-400 bg-amber-400/10 shadow-lg' 
+                        : isRoomFull(room)
+                        ? 'border-red-600/40 bg-red-900/20 cursor-not-allowed opacity-50'
+                        : 'border-amber-700/40 bg-amber-50/5 hover:border-amber-500/60 hover:bg-amber-50/10'
+                    }`}
+                    onClick={() => !isRoomFull(room) && setSelectedRoom(room)}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-amber-100 text-lg">{room.name}</h3>
+                      {room.status === 'active' && (
+                        <span className="inline-block bg-green-600/80 text-white text-xs px-2 py-1 rounded-full">
+                          🟢 Đang diễn ra
+                        </span>
+                      )}
+                      {room.status === 'waiting' && (
+                        <span className="inline-block bg-yellow-600/80 text-white text-xs px-2 py-1 rounded-full">
+                          ⏳ Chờ bắt đầu
+                        </span>
+                      )}
+                    </div>
+                    
+                    {room.description && (
+                      <p className="text-sm text-amber-300/70 mb-2">{room.description}</p>
+                    )}
+                    
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-amber-300/80">
+                        👥 {room.currentPlayers}/{room.maxPlayers}
+                      </span>
+                      <span className="text-amber-400/60 text-xs">
+                        🕒 {new Date(room.createdAt?.toDate()).toLocaleTimeString('vi-VN')}
+                      </span>
+                    </div>
+
+                    {isRoomFull(room) && (
+                      <div className="mt-2 text-red-400 text-sm font-medium">
+                        ⚠️ Phòng đã đầy
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <motion.div 
+              className="p-4 bg-red-900/30 border border-red-600/40 rounded-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <p className="text-red-400 text-sm">⚠️ {error}</p>
+            </motion.div>
           )}
-        </button>
-      </form>
+
+          {/* Submit Button */}
+          <motion.button
+            type="submit"
+            disabled={!name.trim() || !selectedRoom || joining || isRoomFull(selectedRoom)}
+            className="w-full py-4 px-6 bg-amber-600 text-amber-50 font-bold text-lg rounded-xl hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+            whileHover={!joining && !(!name.trim() || !selectedRoom || isRoomFull(selectedRoom)) ? { scale: 1.02 } : {}}
+            whileTap={!joining && !(!name.trim() || !selectedRoom || isRoomFull(selectedRoom)) ? { scale: 0.98 } : {}}
+          >
+            {joining ? (
+              <span className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-amber-200 border-t-transparent mr-2"></div>
+                Đang tham gia...
+              </span>
+            ) : (
+              '🚀 Tham gia Quiz'
+            )}
+          </motion.button>
+        </motion.form>
+      </motion.div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Component quản trị cho room-based quiz system
- * @param {string} sessionId - ID của room quiz (tương đương roomId)
+ * Component quản trị với vintage style
+ * @param {string} sessionId - ID của room quiz
  */
 const AdminPanel = ({ sessionId }) => {
   const [room, setRoom] = useState(null);
@@ -12,12 +13,13 @@ const AdminPanel = ({ sessionId }) => {
   const [questions, setQuestions] = useState([]);
   const [isStarting, setIsStarting] = useState(false);
   const [isProgressing, setIsProgressing] = useState(false);
-  const [showNameInput, setShowNameInput] = useState(false); // Không hiển thị name input nữa
-  const [timeLeft, setTimeLeft] = useState(0); // Timer countdown
-  const [canProceed, setCanProceed] = useState(false); // Can proceed to next question
-  const [showAnswers, setShowAnswers] = useState(false); // Control answer visibility
-  const [hideQuestion, setHideQuestion] = useState(false); // Hide question during transition
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1); // Track question changes
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [canProceed, setCanProceed] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [hideQuestion, setHideQuestion] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1);
+
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
 
   // Listen to room changes
   useEffect(() => {
@@ -226,172 +228,257 @@ const AdminPanel = ({ sessionId }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          🎯 Quiz Control Panel
-        </h2>
-        <p className="text-gray-600">Room ID: {sessionId}</p>
-      </div>
+    <div 
+      className="min-h-screen py-8 px-6 bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+      
+      <div className="relative z-10 max-w-5xl mx-auto">
+        {/* Header */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4 font-serif">
+            🎯 Bảng Điều Khiển Quiz
+          </h2>
+          <p className="text-amber-300/80 text-lg">Phòng: <span className="font-mono text-amber-200">{sessionId}</span></p>
+        </motion.div>
 
-      {/* Room và trạng thái hiện tại */}
-      <div className="bg-gray-50 p-4 rounded-lg mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 className="font-semibold mb-2">🏠 Room Info:</h3>
-            <div className="text-sm space-y-1">
-              <div><strong>Name:</strong> {room?.name || 'Loading...'}</div>
-              <div><strong>Players:</strong> {room?.currentPlayers || 0}/{room?.maxPlayers || 0}</div>
-              <div><strong>Status:</strong> 
-                <span className={`ml-1 px-2 py-1 rounded text-xs font-medium ${
-                  room?.status === 'waiting' ? 'bg-yellow-100 text-yellow-800' :
-                  room?.status === 'active' ? 'bg-green-100 text-green-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {room?.status?.toUpperCase()}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">🎯 Quiz Status:</h3>
-            {!session ? (
-              <div className="text-orange-600">⏳ Chưa bắt đầu - Sẵn sàng để khởi động</div>
-            ) : session.isFinished ? (
-              <div className="text-green-600">✅ Quiz đã hoàn thành</div>
-            ) : (
-              <div className="space-y-2">
-                <div className="text-blue-600">
-                  🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
+        {/* Room và trạng thái hiện tại */}
+        <motion.div 
+          className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6 mb-8"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <h3 className="font-bold mb-4 text-amber-200 text-xl">�️ Thông tin phòng:</h3>
+              <div className="text-amber-100 space-y-3">
+                <div className="flex justify-between">
+                  <span>Tên phòng:</span>
+                  <span className="font-semibold text-amber-200">{room?.name || 'Đang tải...'}</span>
                 </div>
-                {/* Timer Display */}
-                <div className="flex items-center gap-3">
-                  <div className={`text-2xl font-bold ${
-                    timeLeft > 10 ? 'text-green-600' : 
-                    timeLeft > 5 ? 'text-yellow-600' : 'text-red-600'
+                <div className="flex justify-between">
+                  <span>Người tham gia:</span>
+                  <span className="font-semibold text-amber-300">{room?.currentPlayers || 0}/{room?.maxPlayers || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Trạng thái phòng:</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    room?.status === 'waiting' ? 'bg-yellow-600/80 text-yellow-100' :
+                    room?.status === 'active' ? 'bg-green-600/80 text-green-100' :
+                    'bg-gray-600/80 text-gray-100'
                   }`}>
-                    ⏱️ {timeLeft}s
+                    {room?.status?.toUpperCase() || 'ĐANG TẢI'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <h3 className="font-bold mb-4 text-amber-200 text-xl">🎯 Trạng thái Quiz:</h3>
+              {!session ? (
+                <div className="text-orange-300 text-lg font-semibold">⏳ Chưa bắt đầu - Sẵn sàng khởi động</div>
+              ) : session.isFinished ? (
+                <div className="text-green-300 text-lg font-semibold">✅ Quiz đã hoàn thành</div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-blue-300 text-lg font-semibold">
+                    🔄 Đang diễn ra - Câu {session.currentQuestionIndex + 1}/{questions.length}
                   </div>
-                  <div className="flex-1">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-1000 ${
-                          timeLeft > 10 ? 'bg-green-500' : 
-                          timeLeft > 5 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}
-                        style={{ width: `${(timeLeft / 25) * 100}%` }}
-                      />
+                  {/* Timer Display */}
+                  <div className="flex items-center gap-4">
+                    <motion.div 
+                      className={`text-3xl font-bold ${
+                        timeLeft > 10 ? 'text-green-400' : 
+                        timeLeft > 5 ? 'text-yellow-400' : 'text-red-400'
+                      }`}
+                      animate={timeLeft <= 5 ? { scale: [1, 1.1, 1] } : {}}
+                      transition={{ duration: 0.5, repeat: timeLeft <= 5 ? Infinity : 0 }}
+                    >
+                      ⏱️ {timeLeft}s
+                    </motion.div>
+                    <div className="flex-1">
+                      <div className="w-full bg-amber-900/40 rounded-full h-3">
+                        <motion.div 
+                          className={`h-3 rounded-full transition-all duration-1000 ${
+                            timeLeft > 10 ? 'bg-green-500' : 
+                            timeLeft > 5 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${(timeLeft / 25) * 100}%` }}
+                          animate={{ opacity: timeLeft <= 5 ? [1, 0.5, 1] : 1 }}
+                          transition={{ duration: 0.5, repeat: timeLeft <= 5 ? Infinity : 0 }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="text-xs text-gray-600">
-                  {canProceed ? 
-                    '✅ Có thể chuyển câu tiếp theo' : 
-                    '⏳ Đợi hết 25 giây để có thể chuyển câu'
-                  }
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Câu hỏi hiện tại */}
-      {session && !session.isFinished && !hideQuestion && (
-        <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
-          <h3 className="font-semibold text-blue-800 mb-2">
-            Câu {session.currentQuestionIndex + 1}: 
-          </h3>
-          <p className="text-blue-700 mb-4 text-lg">
-            {questions[session.currentQuestionIndex]?.question}
-          </p>
-          
-          {/* Hiển thị các options */}
-          <div className="mb-4 space-y-2">
-            <h4 className="font-medium text-blue-800">Các lựa chọn:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {questions[session.currentQuestionIndex]?.options?.map((option, index) => (
-                <div 
-                  key={index} 
-                  className={`p-2 rounded border ${
-                    showAnswers && option === questions[session.currentQuestionIndex]?.correctAnswer
-                      ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
-                      : 'bg-white border-gray-200 text-gray-700'
-                  }`}
-                >
-                  {String.fromCharCode(65 + index)}. {option}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Hiển thị đáp án đúng chỉ khi showAnswers = true */}
-          {showAnswers && (
-            <div className="text-sm bg-green-50 p-3 rounded border border-green-200">
-              <strong className="text-green-700">🎯 Đáp án đúng:</strong>
-              <span className="ml-2 text-green-600 font-semibold">
-                {questions[session.currentQuestionIndex]?.correctAnswer}
-              </span>
-              {questions[session.currentQuestionIndex]?.explanation && (
-                <div className="mt-2 text-green-600 text-xs">
-                  <strong>Giải thích:</strong> {questions[session.currentQuestionIndex]?.explanation}
+                  <div className="text-amber-300/80">
+                    {canProceed ? 
+                      '✅ Có thể chuyển câu tiếp theo' : 
+                      '⏳ Đợi hết 25 giây để có thể chuyển câu'
+                    }
+                  </div>
                 </div>
               )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Loading state during question transition */}
-      {session && !session.isFinished && hideQuestion && (
-        <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            <span className="ml-3 text-blue-600">Đang chuyển câu hỏi...</span>
+            </motion.div>
           </div>
-        </div>
-      )}
+        </motion.div>
 
-      {/* Nút điều khiển */}
-      <div className="space-y-4">
-        {!session ? (
-          <button
-            onClick={startQuiz}
-            disabled={isStarting || questions.length === 0}
-            className="w-full py-3 px-4 bg-green-600 text-white font-medium text-lg rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isStarting ? '🔄 Đang khởi động...' : '🚀 Bắt đầu Quiz'}
-          </button>
-        ) : session.isFinished ? (
-          <button
-            onClick={resetQuiz}
-            className="w-full py-3 px-4 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-          >
-            🔄 Khởi động lại Quiz
-          </button>
-        ) : (
-          <button
-            onClick={nextQuestion}
-            disabled={isProgressing || !canProceed}
-            className="w-full py-3 px-4 bg-orange-600 text-white font-medium text-lg rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isProgressing ? '🔄 Đang chuyển...' : 
-             !canProceed ? `⏳ Đợi ${timeLeft}s` :
-             (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
-          </button>
-        )}
-      </div>
+        {/* Câu hỏi hiện tại */}
+        <AnimatePresence mode="wait">
+          {session && !session.isFinished && !hideQuestion && (
+            <motion.div 
+              className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6 mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h3 className="font-bold text-amber-200 mb-4 text-2xl">
+                📖 Câu {session.currentQuestionIndex + 1}: 
+              </h3>
+              <p className="text-amber-100 mb-6 text-xl leading-relaxed">
+                {questions[session.currentQuestionIndex]?.question}
+              </p>
+              
+              {/* Hiển thị các options */}
+              <div className="mb-6">
+                <h4 className="font-semibold text-amber-200 mb-4 text-lg">Các lựa chọn:</h4>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {questions[session.currentQuestionIndex]?.options?.map((option, index) => (
+                    <motion.div 
+                      key={index} 
+                      className={`p-4 rounded-xl border transition-all ${
+                        showAnswers && option === questions[session.currentQuestionIndex]?.correctAnswer
+                          ? 'bg-green-900/40 border-green-500/60 text-green-200 shadow-lg'
+                          : 'bg-amber-50/10 border-amber-700/40 text-amber-200 hover:bg-amber-50/15'
+                      }`}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <span className="font-bold text-amber-300">{String.fromCharCode(65 + index)}.</span> {option}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
 
-      {/* Thông tin quiz */}
-      <div className="mt-6 text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
-        <h4 className="font-semibold mb-2">📋 Thông tin Quiz:</h4>
-        <ul className="space-y-1">
-          <li>• Tổng số câu hỏi: {questions.length}</li>
-          <li>• Thời gian mỗi câu: 20 giây cho người chơi</li>
-          <li>• Admin timer: 25 giây trước khi có thể chuyển câu</li>
-          <li>• Hệ thống tính điểm: Căn cứ vào thời gian trả lời</li>
-          <li>• Session ID: {sessionId}</li>
-        </ul>
+              {/* Hiển thị đáp án đúng */}
+              {showAnswers && (
+                <motion.div 
+                  className="bg-green-900/30 border border-green-600/40 p-4 rounded-xl"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <div className="text-green-200">
+                    <strong>🎯 Đáp án đúng:</strong>
+                    <span className="ml-2 font-bold text-green-300">
+                      {questions[session.currentQuestionIndex]?.correctAnswer}
+                    </span>
+                    {questions[session.currentQuestionIndex]?.explanation && (
+                      <div className="mt-3 text-green-300/80">
+                        <strong>💡 Giải thích:</strong> {questions[session.currentQuestionIndex]?.explanation}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Loading state during question transition */}
+          {session && !session.isFinished && hideQuestion && (
+            <motion.div 
+              className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6 mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-2 border-amber-400 border-t-transparent mr-4"></div>
+                <span className="text-amber-300 text-xl">Đang chuyển câu hỏi...</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Nút điều khiển */}
+        <motion.div 
+          className="mb-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          {!session ? (
+            <motion.button
+              onClick={startQuiz}
+              disabled={isStarting || questions.length === 0}
+              className="w-full py-4 px-6 bg-green-600 text-white font-bold text-xl rounded-xl hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+              whileHover={!isStarting && questions.length > 0 ? { scale: 1.02 } : {}}
+              whileTap={!isStarting && questions.length > 0 ? { scale: 0.98 } : {}}
+            >
+              {isStarting ? '🔄 Đang khởi động...' : '🚀 Bắt đầu Quiz'}
+            </motion.button>
+          ) : session.isFinished ? (
+            <motion.button
+              onClick={resetQuiz}
+              className="w-full py-4 px-6 bg-blue-600 text-white font-bold text-xl rounded-xl hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all shadow-lg"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              🔄 Khởi động lại Quiz
+            </motion.button>
+          ) : (
+            <motion.button
+              onClick={nextQuestion}
+              disabled={isProgressing || !canProceed}
+              className="w-full py-4 px-6 bg-amber-600 text-white font-bold text-xl rounded-xl hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+              whileHover={!isProgressing && canProceed ? { scale: 1.02 } : {}}
+              whileTap={!isProgressing && canProceed ? { scale: 0.98 } : {}}
+            >
+              {isProgressing ? '🔄 Đang chuyển...' : 
+               !canProceed ? `⏳ Đợi ${timeLeft}s` :
+               (session.currentQuestionIndex >= questions.length - 1 ? '🏁 Kết thúc Quiz' : '➡️ Câu tiếp theo')}
+            </motion.button>
+          )}
+        </motion.div>
+
+        {/* Thông tin quiz */}
+        <motion.div 
+          className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <h4 className="font-bold mb-4 text-amber-200 text-xl">📋 Thông tin Quiz:</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-amber-100">
+            <ul className="space-y-2">
+              <li>• <span className="font-semibold text-amber-200">Tổng số câu hỏi:</span> {questions.length}</li>
+              <li>• <span className="font-semibold text-amber-200">Thời gian mỗi câu:</span> 20 giây cho người chơi</li>
+              <li>• <span className="font-semibold text-amber-200">Timer admin:</span> 25 giây trước khi chuyển câu</li>
+            </ul>
+            <ul className="space-y-2">
+              <li>• <span className="font-semibold text-amber-200">Hệ thống tính điểm:</span> Căn cứ vào thời gian trả lời</li>
+              <li>• <span className="font-semibold text-amber-200">Session ID:</span> <span className="font-mono text-amber-300">{sessionId}</span></li>
+            </ul>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

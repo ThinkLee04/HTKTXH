@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, arrayUnion, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { calculateScore, formatTimeRemaining, getTimeRemaining } from '../utils/score';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Component chính để hiển thị câu hỏi và xử lý trả lời
+ * Component chính quiz với vintage style
  * @param {object} player - Thông tin người chơi
  * @param {string} sessionId - ID của session quiz
  * @param {function} onQuizComplete - Callback khi quiz hoàn thành
@@ -13,12 +14,14 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [session, setSession] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(20); // Changed from 30 to 20
+  const [timeRemaining, setTimeRemaining] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const vintagePaperTexture = "url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTA1NzQwNC1pbWFnZS1qb2I2MzAtYV8xLmpwZw.jpg')";
 
   // Listen to session changes
   useEffect(() => {
@@ -177,119 +180,259 @@ const Quiz = ({ player, sessionId, onQuizComplete }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+      <div 
+        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        style={{ 
+          backgroundImage: vintagePaperTexture, 
+          backgroundBlendMode: "multiply",
+          backgroundColor: "#180b03f5" 
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+        <motion.div 
+          className="relative z-10 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-amber-400 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-amber-300 text-lg">Đang tải câu hỏi...</p>
+        </motion.div>
       </div>
     );
   }
 
   if (!session) {
     return (
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg text-center">
-        <h2 className="text-xl font-semibold mb-4">Chờ quiz bắt đầu...</h2>
-        <p className="text-gray-600">Nhóm thuyết trình sẽ khởi động quiz sớm thôi!</p>
+      <div 
+        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        style={{ 
+          backgroundImage: vintagePaperTexture, 
+          backgroundBlendMode: "multiply",
+          backgroundColor: "#180b03f5" 
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+        <motion.div 
+          className="relative z-10 bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-8 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <h2 className="text-2xl font-bold text-amber-100 mb-4">Chờ quiz bắt đầu...</h2>
+          <p className="text-amber-300/80">Giáo viên sẽ khởi động quiz sớm thôi!</p>
+        </motion.div>
       </div>
     );
   }
 
   if (!currentQuestion) {
     return (
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg text-center">
-        <h2 className="text-xl font-semibold mb-4">Đang chờ câu hỏi...</h2>
+      <div 
+        className="min-h-screen flex items-center justify-center bg-[#231812]"
+        style={{ 
+          backgroundImage: vintagePaperTexture, 
+          backgroundBlendMode: "multiply",
+          backgroundColor: "#180b03f5" 
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+        <motion.div 
+          className="relative z-10 bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-8 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <h2 className="text-2xl font-bold text-amber-100 mb-4">Đang chờ câu hỏi...</h2>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      {/* Header với thông tin câu hỏi và thời gian */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <span className="text-sm text-gray-600">
-            Câu {session.currentQuestionIndex + 1}/{questions.length}
-          </span>
-          <h2 className="text-lg font-semibold">Chào {player.name}!</h2>
-        </div>
-        <div className="text-right">
-          <div className={`text-2xl font-bold ${timeRemaining <= 5 ? 'text-red-600' : 'text-blue-600'}`}>
-            {formatTimeRemaining(timeRemaining)}
+    <div 
+      className="min-h-screen flex items-center justify-center p-6 bg-[#231812]"
+      style={{ 
+        backgroundImage: vintagePaperTexture, 
+        backgroundBlendMode: "multiply",
+        backgroundColor: "#180b03f5" 
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[#e5caa2]/8 mix-blend-soft-light"></div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-full max-w-4xl"
+      >
+        {/* Header với thông tin câu hỏi và thời gian */}
+        <motion.div 
+          className="flex flex-col md:flex-row justify-between items-center mb-8 bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-6"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="text-center md:text-left mb-4 md:mb-0">
+            <span className="text-amber-400/80 text-sm font-medium">
+              Câu {session.currentQuestionIndex + 1}/{questions.length}
+            </span>
+            <h2 className="text-2xl font-bold text-amber-100">Chào {player.name}!</h2>
           </div>
-          <div className="text-sm text-gray-600">Điểm: {player.score}</div>
-        </div>
-      </div>
-
-      {/* Câu hỏi */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">
-          {currentQuestion.question}
-        </h3>
-
-        {/* Form trả lời hoặc kết quả */}
-        {!showResult ? (
-          <form onSubmit={handleAnswerSubmit} className="space-y-3">
-            {currentQuestion.options.map((option, index) => (
-              <label
-                key={index}
-                className={`block p-3 border rounded-lg cursor-pointer transition-colors ${
-                  selectedAnswer === option
-                    ? 'bg-blue-100 border-blue-500'
-                    : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
-                } ${hasAnswered ? 'cursor-not-allowed opacity-60' : ''}`}
-              >
-                <input
-                  type="radio"
-                  name="answer"
-                  value={option}
-                  checked={selectedAnswer === option}
-                  onChange={(e) => setSelectedAnswer(e.target.value)}
-                  disabled={hasAnswered}
-                  className="mr-3"
-                />
-                {option}
-              </label>
-            ))}
-
-            <button
-              type="submit"
-              disabled={!selectedAnswer || hasAnswered}
-              className="w-full py-3 px-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          <div className="text-center md:text-right">
+            <motion.div 
+              className={`text-4xl font-bold mb-2 ${timeRemaining <= 5 ? 'text-red-400' : 'text-amber-300'}`}
+              animate={timeRemaining <= 5 ? { scale: [1, 1.1, 1] } : {}}
+              transition={{ duration: 0.5, repeat: timeRemaining <= 5 ? Infinity : 0 }}
             >
-              {hasAnswered ? 'Đã trả lời' : 'Gửi đáp án'}
-            </button>
-          </form>
-        ) : (
-          /* Hiển thị kết quả */
-          <div className="space-y-4">
-            <div className="p-4 bg-green-100 border border-green-300 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-2">Đáp án đúng:</h4>
-              <p className="text-green-700">{currentQuestion.correctAnswer}</p>
-            </div>
-
-            {currentQuestion.explanation && (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">Giải thích:</h4>
-                <p className="text-blue-700">{currentQuestion.explanation}</p>
-              </div>
-            )}
-
-            <div className="text-center py-4">
-              <p className="text-lg">
-                {hasAnswered && player.answers && player.answers.length > session.currentQuestionIndex ? 
-                  (player.answers[session.currentQuestionIndex]?.isCorrect ? 
-                    `🎉 Chính xác! +${player.answers[session.currentQuestionIndex]?.score} điểm` : 
-                    '❌ Sai rồi!'
-                  ) : 
-                  '⏰ Hết thời gian!'
-                }
-              </p>
-            </div>
-
-            <div className="text-center text-gray-600">
-              Đang chờ câu hỏi tiếp theo...
+              {formatTimeRemaining(timeRemaining)}
+            </motion.div>
+            <div className="text-amber-200 font-medium">
+              💰 Điểm: <span className="text-amber-400 font-bold">{player.score}</span>
             </div>
           </div>
-        )}
-      </div>
+        </motion.div>
+
+        {/* Câu hỏi chính */}
+        <motion.div 
+          className="bg-[#2b2018]/90 backdrop-blur-sm border border-amber-900/30 rounded-2xl p-8"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <motion.h3 
+            className="text-2xl md:text-3xl font-bold mb-8 text-amber-100 text-center leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            {currentQuestion.question}
+          </motion.h3>
+
+          {/* Form trả lời hoặc kết quả */}
+          <AnimatePresence mode="wait">
+            {!showResult ? (
+              <motion.form 
+                onSubmit={handleAnswerSubmit} 
+                className="space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {currentQuestion.options.map((option, index) => (
+                  <motion.label
+                    key={index}
+                    className={`block p-4 border rounded-xl cursor-pointer transition-all text-lg ${
+                      selectedAnswer === option
+                        ? 'bg-amber-600/20 border-amber-400 text-amber-100 shadow-lg'
+                        : 'bg-amber-50/10 border-amber-700/40 text-amber-200 hover:bg-amber-50/15 hover:border-amber-500/60'
+                    } ${hasAnswered ? 'cursor-not-allowed opacity-60' : 'hover:scale-[1.02]'}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    whileHover={!hasAnswered ? { scale: 1.02 } : {}}
+                    whileTap={!hasAnswered ? { scale: 0.98 } : {}}
+                  >
+                    <input
+                      type="radio"
+                      name="answer"
+                      value={option}
+                      checked={selectedAnswer === option}
+                      onChange={(e) => setSelectedAnswer(e.target.value)}
+                      disabled={hasAnswered}
+                      className="mr-4 scale-125 text-amber-500"
+                    />
+                    <span className="font-medium">{String.fromCharCode(65 + index)}.</span> {option}
+                  </motion.label>
+                ))}
+
+                <motion.button
+                  type="submit"
+                  disabled={!selectedAnswer || hasAnswered}
+                  className="w-full py-4 px-6 bg-amber-600 text-amber-50 font-bold text-xl rounded-xl hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg mt-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  whileHover={!hasAnswered && selectedAnswer ? { scale: 1.02 } : {}}
+                  whileTap={!hasAnswered && selectedAnswer ? { scale: 0.98 } : {}}
+                >
+                  {hasAnswered ? '✅ Đã trả lời' : '🚀 Gửi đáp án'}
+                </motion.button>
+              </motion.form>
+            ) : (
+              /* Hiển thị kết quả */
+              <motion.div 
+                className="space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <motion.div 
+                  className="p-6 bg-green-900/30 border border-green-600/40 rounded-xl"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <h4 className="font-bold text-green-300 mb-3 text-xl">✅ Đáp án đúng:</h4>
+                  <p className="text-green-200 text-lg font-medium">{currentQuestion.correctAnswer}</p>
+                </motion.div>
+
+                {currentQuestion.explanation && (
+                  <motion.div 
+                    className="p-6 bg-blue-900/30 border border-blue-600/40 rounded-xl"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <h4 className="font-bold text-blue-300 mb-3 text-xl">💡 Giải thích:</h4>
+                    <p className="text-blue-200 leading-relaxed">{currentQuestion.explanation}</p>
+                  </motion.div>
+                )}
+
+                <motion.div 
+                  className="text-center py-6"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <p className="text-2xl mb-4">
+                    {hasAnswered && player.answers && player.answers.length > session.currentQuestionIndex ? 
+                      (player.answers[session.currentQuestionIndex]?.isCorrect ? 
+                        `🎉 Chính xác! +${player.answers[session.currentQuestionIndex]?.score} điểm` : 
+                        '❌ Sai rồi!'
+                      ) : 
+                      '⏰ Hết thời gian!'
+                    }
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  className="text-center text-amber-300/70 p-4 bg-amber-900/20 rounded-xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <div className="flex justify-center space-x-2 mb-2">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-3 h-3 bg-amber-400 rounded-full"
+                        animate={{ 
+                          y: [0, -8, 0],
+                          opacity: [0.5, 1, 0.5]
+                        }}
+                        transition={{ 
+                          duration: 1.5, 
+                          repeat: Infinity, 
+                          delay: i * 0.2 
+                        }}
+                      />
+                    ))}
+                  </div>
+                  Đang chờ câu hỏi tiếp theo...
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
