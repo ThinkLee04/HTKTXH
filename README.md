@@ -39,10 +39,14 @@ Một ứng dụng web học thuật hiện đại để học về học thuy�
 ### Cài đặt
 ```bash
 # Clone dự án hoặc tải về workspace
-cd pre
+cd HTKTXH
 
 # Cài đặt dependencies
 npm install
+
+# Cấu hình biến môi trường
+cp .env.example .env
+# Cập nhật thông tin Firebase trong file .env
 
 # Chạy development server
 npm run dev
@@ -53,6 +57,8 @@ npm run build
 # Preview production build
 npm run preview
 ```
+
+⚠️ **Quan trọng:** Bạn cần cấu hình Firebase trước khi chạy ứng dụng. Xem hướng dẫn chi tiết trong `FIREBASE_SETUP.md`
 
 Ứng dụng sẽ chạy tại `http://localhost:5173`
 

@@ -13,18 +13,25 @@ Hệ thống quiz realtime sử dụng Firebase Firestore để đồng bộ d�
 ### 2. Cấu hình Firebase
 1. Vào Project Settings → General → Your apps
 2. Click biểu tượng Web (</>) để tạo Firebase Web App
-3. Copy config object và thay thế trong file `src/firebase.js`:
+3. **Cấu hình biến môi trường:**
 
-```javascript
-const firebaseConfig = {
-  apiKey: "your-actual-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-actual-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-actual-app-id"
-};
-```
+   a. Sao chép file template:
+   ```bash
+   cp .env.example .env
+   ```
+
+   b. Cập nhật thông tin Firebase trong file `.env`:
+   ```env
+   VITE_FIREBASE_API_KEY=your-actual-api-key
+   VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your-actual-project-id
+   VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+   VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
+   VITE_FIREBASE_APP_ID=your-actual-app-id
+   VITE_FIREBASE_MEASUREMENT_ID=your-measurement-id
+   ```
+
+   ⚠️ **Quan trọng:** File `.env` chứa thông tin nhạy cảm và đã được thêm vào `.gitignore`. Không commit file này lên Git!
 
 ### 3. Firestore Security Rules
 Trong Firebase Console → Firestore Database → Rules, dùng rules này cho development:
