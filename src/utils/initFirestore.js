@@ -9,128 +9,128 @@ import { db } from '../firebase';
 const sampleQuestions = [
   {
     id: 1,
-    question: "Theo Marx, giai cấp nào là lực lượng cách mạng chủ yếu trong xã hội tư bản?",
-    options: ["Giai cấp nông dân", "Giai cấp công nhân", "Giai cấp trí thức", "Tiểu tư sản"],
-    correctAnswer: "Giai cấp công nhân",
-    explanation: "Marx cho rằng giai cấp công nhân là lực lượng cách mạng chủ yếu vì họ không có tư liệu sản xuất và bị bóc lột bởi giai cấp tư bản.",
-    category: "Giai cấp và đấu tranh giai cấp"
+    question: "Hoạt động nào được coi là cơ sở của sự tồn tại và phát triển của xã hội?",
+    options: ["Sản xuất tinh thần", "Sản xuất ra bản thân con người", "Sản xuất vật chất", "Sản xuất tư liệu lao động"],
+    correctAnswer: "Sản xuất vật chất",
+    explanation: "Trong các loại hình sản xuất, sản xuất vật chất là cơ sở của sự tồn tại và phát triển của xã hội. Sản xuất vật chất là quá trình con người sử dụng công cụ lao động tác động vào tự nhiên để tạo ra của cải vật chất nhằm thỏa mãn nhu cầu tồn tại và phát triển của con người.",
+    category: "Cơ sở sản xuất xã hội"
   },
   {
     id: 2,
-    question: "Giá trị thặng dư là gì trong lý thuyết kinh tế Marx?",
+    question: "Theo quan điểm của Triết học Mác-Lênin, Lực lượng sản xuất (LLSX) biểu thị mối quan hệ nào trong quá trình sản xuất?",
     options: [
-      "Lợi nhuận của nhà tư bản", 
-      "Giá trị do công nhân tạo ra nhưng không được trả công", 
-      "Thuế mà nhà nước thu", 
-      "Chi phí sản xuất"
+      "Mối quan hệ giữa con người với con người trong quá trình sản xuất vật chất", 
+      "Mối quan hệ giữa các giai cấp trong xã hội", 
+      "Mối quan hệ giữa Cơ sở hạ tầng và Kiến trúc thượng tầng", 
+      "Mối quan hệ giữa con người với tự nhiên trong quá trình sản xuất"
     ],
-    correctAnswer: "Giá trị do công nhân tạo ra nhưng không được trả công",
-    explanation: "Giá trị thặng dư là phần giá trị do công nhân tạo ra vượt quá giá trị sức lao động của họ, được nhà tư bản chiếm đoạt.",
-    category: "Kinh tế chính trị Marx"
+    correctAnswer: "Mối quan hệ giữa con người với tự nhiên trong quá trình sản xuất",
+    explanation: "Lực lượng sản xuất biểu thị mối quan hệ giữa con người với tự nhiên trong quá trình sản xuất, biểu hiện năng lực chinh phục tự nhiên của con người. LLSX bao gồm Người lao động (NLĐ) và Tư liệu sản xuất (TLSX).",
+    category: "Lực lượng sản xuất"
   },
   {
     id: 3,
-    question: "Theo Lenin, chủ nghĩa đế quốc là giai đoạn nào của chủ nghĩa tư bản?",
+    question: "Quan hệ sản xuất (QHSX) bao gồm những loại quan hệ cơ bản nào cấu thành?",
     options: [
-      "Giai đoạn đầu", 
-      "Giai đoạn phát triển", 
-      "Giai đoạn cao nhất và cuối cùng", 
-      "Giai đoạn chuyển đổi"
+      "Quan hệ sở hữu tư liệu sản xuất, người lao động và công cụ lao động", 
+      "Quan hệ sở hữu, quan hệ tổ chức/quản lý và quan hệ phân phối sản phẩm xã hội", 
+      "Quan hệ giữa LLSX và KTTT", 
+      "Quan hệ giữa thể chất và trình độ của người lao động"
     ],
-    correctAnswer: "Giai đoạn cao nhất và cuối cùng",
-    explanation: "Lenin định nghĩa chủ nghĩa đế quốc là giai đoạn cao nhất và cuối cùng của chủ nghĩa tư bản, với sự thống trị của tư bản tài chính.",
-    category: "Lý thuyết Lenin"
+    correctAnswer: "Quan hệ sở hữu, quan hệ tổ chức/quản lý và quan hệ phân phối sản phẩm xã hội",
+    explanation: "Quan hệ sản xuất bao gồm: Quan hệ sở hữu, Quan hệ tổ chức, quản lý, và Quan hệ phân phối sản phẩm XH (quan hệ phân phối). Quan hệ sản xuất chỉ quan hệ giữa con người với con người trong quá trình sản xuất vật chất.",
+    category: "Quan hệ sản xuất"
   },
   {
     id: 4,
-    question: "Cơ sở hạ tầng kinh tế bao gồm những yếu tố nào?",
+    question: "Trong mối quan hệ biện chứng giữa Lực lượng sản xuất (LLSX) và Quan hệ sản xuất (QHSX), yếu tố nào giữ vai trò quyết định?",
     options: [
-      "Lực lượng sản xuất và quan hệ sản xuất", 
-      "Chính trị và pháp luật", 
-      "Tôn giáo và đạo đức", 
-      "Văn hóa và giáo dục"
+      "Quan hệ sản xuất quyết định LLSX", 
+      "Lực lượng sản xuất quyết định QHSX", 
+      "Cả hai cùng quyết định lẫn nhau với vai trò ngang nhau", 
+      "Phương thức sản xuất quyết định cả hai yếu tố"
     ],
-    correctAnswer: "Lực lượng sản xuất và quan hệ sản xuất",
-    explanation: "Cơ sở hạ tầng kinh tế gồm lực lượng sản xuất (con người và tư liệu sản xuất) và quan hệ sản xuất (quan hệ giữa các giai cấp trong sản xuất).",
-    category: "Cơ sở và kiến trúc thượng tầng"
+    correctAnswer: "Lực lượng sản xuất quyết định QHSX",
+    explanation: "Lực lượng sản xuất và quan hệ sản xuất là hai mặt của một phương thức sản xuất, tác động biện chứng, trong đó lực lượng sản xuất quyết định quan hệ sản xuất. LLSX quyết định QHSX vì LLSX là nội dung của quá trình sản xuất, có tính năng động, cách mạng và thường xuyên phát triển.",
+    category: "Phương thức sản xuất"
   },
   {
     id: 5,
-    question: "Sự phát triển của lực lượng sản xuất và quan hệ sản xuất theo quy luật gì?",
+    question: "Theo Triết học Mác-Lênin, yếu tố nào dưới đây trở thành nguyên nhân mọi biến đổi trong Lực lượng sản xuất (LLSX) khi nó trở thành lực lượng sản xuất trực tiếp?",
     options: [
-      "Quy luật cung cầu", 
-      "Quy luật tương ứng giữa quan hệ sản xuất và tính chất của lực lượng sản xuất", 
-      "Quy luật giá trị", 
-      "Quy luật phân phối"
+      "Tính năng động của công cụ lao động", 
+      "Kỹ năng, phẩm chất của người lao động", 
+      "Khoa học và công nghệ (phát minh, sáng chế, công nghệ)", 
+      "Đối tượng lao động và tư liệu lao động"
     ],
-    correctAnswer: "Quy luật tương ứng giữa quan hệ sản xuất và tính chất của lực lượng sản xuất",
-    explanation: "Đây là quy luật khách quan chi phối sự vận động và phát triển của phương thức sản xuất.",
-    category: "Quy luật kinh tế"
+    correctAnswer: "Khoa học và công nghệ (phát minh, sáng chế, công nghệ)",
+    explanation: "Khi Khoa học trở thành lực lượng sản xuất trực tiếp, việc sản xuất của cải đặc biệt, hàng hoá đặc biệt (phát minh, sáng chế, công nghệ) trở thành nguyên nhân mọi biến đổi trong LLSX.",
+    category: "Khoa học và công nghệ"
   },
   {
     id: 6,
-    question: "Theo Marx, cách mạng xã hội xảy ra khi nào?",
+    question: "Khái niệm Cơ sở hạ tầng (CSHT) là toàn bộ những quan hệ sản xuất hợp thành cơ cấu kinh tế của xã hội. Cơ sở hạ tầng bao gồm những thành phần nào?",
     options: [
-      "Khi nhân dân đói khổ", 
-      "Khi quan hệ sản xuất cũ trở thành xiềng xích cản trở sự phát triển của lực lượng sản xuất", 
-      "Khi có lãnh tụ cách mạng", 
-      "Khi nước ngoài can thiệp"
+      "Các thiết chế xã hội như nhà nước, pháp luật, tôn giáo", 
+      "QHSX tàn dư, QHSX thống trị, QHSX mầm mống", 
+      "Lực lượng sản xuất, Quan hệ sản xuất và Kiến trúc thượng tầng", 
+      "Tư tưởng xã hội và quan hệ nội tại của thượng tầng"
     ],
-    correctAnswer: "Khi quan hệ sản xuất cũ trở thành xiềng xích cản trở sự phát triển của lực lượng sản xuất",
-    explanation: "Cách mạng xã hội là kết quả tất yếu của mâu thuẫn không thể dung hòa giữa lực lượng sản xuất và quan hệ sản xuất.",
-    category: "Cách mạng xã hội"
+    correctAnswer: "QHSX tàn dư, QHSX thống trị, QHSX mầm mống",
+    explanation: "Cơ sở hạ tầng là toàn bộ những quan hệ sản xuất hợp thành cơ cấu kinh tế của xã hội. CSHT bao gồm: QHSX tàn dư, QHSX thống trị, QHSX mầm mống.",
+    category: "Cơ sở hạ tầng"
   },
   {
     id: 7,
-    question: "Hình thái kinh tế - xã hội nào NOT được Marx xác định trong lịch sử loài người?",
+    question: "Kiến trúc thượng tầng (KTTT) của xã hội bao gồm những yếu tố nào?",
     options: [
-      "Cộng sản nguyên thủy", 
-      "Chế độ phong kiến", 
-      "Chế độ thực dân", 
-      "Chủ nghĩa tư bản"
+      "Chỉ bao gồm các thiết chế như nhà nước và pháp luật", 
+      "Chỉ bao gồm các quan hệ sản xuất", 
+      "Toàn bộ những tư tưởng xã hội với những thiết chế xã hội tương ứng cùng những quan hệ nội tại của thượng tầng hình thành trên một cơ sở hạ tầng nhất định", 
+      "Lực lượng sản xuất và phương thức sản xuất"
     ],
-    correctAnswer: "Chế độ thực dân",
-    explanation: "Marx xác định 5 hình thái: cộng sản nguyên thủy, chế độ nô lệ, chế độ phong kiến, chủ nghĩa tư bản và chủ nghĩa cộng sản. Chế độ thực dân không phải là hình thái riêng biệt.",
-    category: "Hình thái kinh tế - xã hội"
+    correctAnswer: "Toàn bộ những tư tưởng xã hội với những thiết chế xã hội tương ứng cùng những quan hệ nội tại của thượng tầng hình thành trên một cơ sở hạ tầng nhất định",
+    explanation: "Kiến trúc thượng tầng của xã hội là toàn bộ những tư tưởng xã hội với những thiết chế xã hội tương ứng cùng những quan hệ nội tại của thượng tầng hình thành trên một cơ sở hạ tầng nhất định. KTTT bao gồm quan điểm chính trị, pháp luật, triết học, đạo đức, tôn giáo và thiết chế tương ứng như nhà nước.",
+    category: "Kiến trúc thượng tầng"
   },
   {
     id: 8,
-    question: "Đặc điểm cơ bản của chế độ sản xuất nô lệ là gì?",
+    question: "Trong quy luật biện chứng giữa Cơ sở hạ tầng (CSHT) và Kiến trúc thượng tầng (KTTT), vai trò lớn nhất thuộc về yếu tố nào và vì sao?",
     options: [
-      "Nô lệ là tài sản của chủ nô", 
-      "Nô lệ được trả lương", 
-      "Nô lệ có quyền sở hữu tư liệu sản xuất", 
-      "Nô lệ tự do lao động"
+      "KTTT có vai trò lớn nhất do tính độc lập tương đối của nó", 
+      "QHSX tàn dư có vai trò lớn nhất trong việc hình thành KTTT", 
+      "CSHT có vai trò quyết định, xét đến cùng là quan hệ vật chất quyết định quan hệ tinh thần", 
+      "KTTT chính trị có vai trò lớn nhất do phản ánh trực tiếp kinh tế"
     ],
-    correctAnswer: "Nô lệ là tài sản của chủ nô",
-    explanation: "Trong chế độ nô lệ, nô lệ bị coi như tài sản của chủ nô, không có quyền tự do cá nhân và bị bóc lột hoàn toàn sức lao động.",
-    category: "Hình thái kinh tế - xã hội"
+    correctAnswer: "CSHT có vai trò quyết định, xét đến cùng là quan hệ vật chất quyết định quan hệ tinh thần",
+    explanation: "Trong quy luật này, Cơ sở hạ tầng quyết định kiến trúc thượng tầng. CSHT quyết định sự ra đời, cơ cấu, vận động và tính chất của KTTT. Nguyên nhân là từ quan hệ vật chất quyết định quan hệ tinh thần.",
+    category: "Quy luật CSHT - KTTT"
   },
   {
     id: 9,
-    question: "Kiến trúc thượng tầng xã hội bao gồm những gì?",
+    question: "Khi Quan hệ sản xuất (QHSX) tác động trở lại đối với Lực lượng sản xuất (LLSX), sự tác động này diễn ra theo mấy chiều hướng?",
     options: [
-      "Chỉ có chính trị và pháp luật", 
-      "Các quan hệ chính trị, pháp luật, tôn giáo, đạo đức, nghệ thuật, triết học", 
-      "Chỉ có tôn giáo và đạo đức", 
-      "Chỉ có kinh tế và chính trị"
+      "Chỉ có chiều hướng thúc đẩy sự phát triển của LLSX", 
+      "Chỉ có chiều hướng kìm hãm sự phát triển của LLSX", 
+      "Thúc đẩy hoặc kìm hãm sự phát triển của LLSX", 
+      "Không tác động trực tiếp mà chỉ thông qua Cơ sở hạ tầng"
     ],
-    correctAnswer: "Các quan hệ chính trị, pháp luật, tôn giáo, đạo đức, nghệ thuật, triết học",
-    explanation: "Kiến trúc thượng tầng bao gồm tất cả các quan hệ xã hội, tư tưởng và thể chế không thuộc về cơ sở kinh tế.",
-    category: "Cơ sở và kiến trúc thượng tầng"
+    correctAnswer: "Thúc đẩy hoặc kìm hãm sự phát triển của LLSX",
+    explanation: "Sự tác động trở lại của QHSX đối với LLSX diễn ra hai chiều hướng: Thúc đẩy hoặc kìm hãm sự phát triển của lực lượng sản xuất.",
+    category: "Tác động biện chứng"
   },
   {
     id: 10,
-    question: "Nhà nước trong quan niệm Marx-Lenin có bản chất gì?",
+    question: "Mác đã khẳng định sự phát triển của các Hình thái kinh tế - xã hội là quá trình mang tính chất gì?",
     options: [
-      "Là tổ chức của toàn xã hội", 
-      "Là máy móc bạo lực của giai cấp thống trị", 
-      "Là tổ chức từ thiện", 
-      "Là tổ chức kinh tế"
+      "Lịch sử - ý chí", 
+      "Chủ quan - xã hội", 
+      "Lô gíc - lịch sử", 
+      "Lịch sử - tự nhiên"
     ],
-    correctAnswer: "Là máy móc bạo lực của giai cấp thống trị",
-    explanation: "Marx và Lenin khẳng định nhà nước có bản chất giai cấp, là công cụ để giai cấp thống trị duy trì quyền lực và đàn áp giai cấp bị trị.",
-    category: "Nhà nước và pháp quyền"
+    correctAnswer: "Lịch sử - tự nhiên",
+    explanation: "Mác viết: \"Sự phát triển của các HTKTXH là một quá trình lịch sử - tự nhiên\". Điều này có nghĩa là sự phát triển xã hội vận động theo những quy luật khách quan, xét đến cùng là sự phát triển của LLSX.",
+    category: "Hình thái kinh tế - xã hội"
   }
 ];
 
