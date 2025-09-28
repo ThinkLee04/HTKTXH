@@ -102,7 +102,7 @@ const sampleQuestions = [
       "CSHT có vai trò quyết định, xét đến cùng là quan hệ vật chất quyết định quan hệ tinh thần", 
       "KTTT chính trị có vai trò lớn nhất do phản ánh trực tiếp kinh tế"
     ],
-    correctAnswer: "CSHT có vai trò quyết định, xét đến cùng là quan hệ vật chất quyết định quan hệ tinh thần",
+    correctAnswer: "CSHT có vai trò quyết định, xét đến cùng là quan hệ vật chất quyết định quan hệ tinh thần ",
     explanation: "Trong quy luật này, Cơ sở hạ tầng quyết định kiến trúc thượng tầng. CSHT quyết định sự ra đời, cơ cấu, vận động và tính chất của KTTT. Nguyên nhân là từ quan hệ vật chất quyết định quan hệ tinh thần.",
     category: "Quy luật CSHT - KTTT"
   },
