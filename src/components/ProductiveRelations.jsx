@@ -9,6 +9,7 @@ import image2 from '../assets/2.png';
 import image3 from '../assets/3.png';
 import image4 from '../assets/4.png';
 import image5 from '../assets/5.png';
+import image6 from '../assets/6.png'; 
 
 // Textures for vintage style
 const parchmentTexture = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23221712'/%3E%3Cg fill='%23f1d4a4' fill-opacity='0.05'%3E%3Cpath d='M0 0h2v2H0zm125 45h2v1h-2zM70 105h1v2h-1zM205 80h2v1h-2zM40 160h2v2h-2zM180 150h1v2h-1zM95 215h2v1H95zM150 195h2v1h-2z'/%3E%3C/g%3E%3C/svg%3E\")";
@@ -656,7 +657,7 @@ const ProductiveRelations = () => {
             {/* Car Image with Interactive Analysis Points */}
             <div className="relative w-full max-w-4xl mx-auto">
               <img
-                src="/image.png"
+                src={image6}
                 alt="Hình ảnh minh họa: Chiếc xe, Con đường và Luật lệ"
                 className="w-full h-auto rounded-3xl shadow-2xl border border-amber-900/40"
               />
