@@ -67,7 +67,7 @@
 - **Trang chủ**: `http://localhost:5173/`
 - **Quiz Player**: `http://localhost:5173/quiz`
 - **Quiz Admin**: `http://localhost:5173/quiz?admin=true`
-- **AI Usage**: `http://localhost:5173/ai-usage`
+
 
 ## ⚙️ Tùy chỉnh câu hỏi
 Sửa file `src/utils/initFirestore.js` → array `sampleQuestions`

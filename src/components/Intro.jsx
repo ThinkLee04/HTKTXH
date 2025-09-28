@@ -47,7 +47,7 @@ const Intro = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="relative z-10 mx-auto max-w-4xl px-6 text-center"
+        className="relative z-10 mx-auto px-6 text-center"
       >
         <motion.h1
           initial={{ opacity: 0 }}
@@ -55,7 +55,7 @@ const Intro = () => {
           transition={{ duration: 0.8, delay: 1 }}
           className="mb-6 text-3xl font-bold tracking-wide text-amber-100 md:text-5xl lg:text-6xl "
         >
-          Học thuyết Kinh tế - Xã hội
+          Học thuyết hình thái Kinh tế - Xã hội
         </motion.h1>
         
         <motion.h2
