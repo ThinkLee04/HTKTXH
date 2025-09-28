@@ -75,7 +75,7 @@ src/
 │   └── FooterNav.jsx               # Navigation footer
 ├── pages/
 │   ├── MainPage.jsx                # Trang chính
-│   ├── AiUsagePage.jsx            # Trang hướng dẫn AI
+
 │   └── QuizPage.jsx               # Trang quiz
 ├── App.jsx                        # Router setup
 ├── App.css                        # Custom styles
