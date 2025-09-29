@@ -62,14 +62,14 @@ const RealWorldExamples = () => {
   return (
     <>
       {/* SECTION 1: TỔNG HỢP VÀ Ý NGHĨA */}
-      <div className="relative h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-amber-950 to-slate-800">
+      <div className="relative min-h-screen py-20 flex items-center justify-center bg-gradient-to-br from-slate-900 via-amber-950 to-slate-800">
         {/* Background texture */}
         <div 
           className="absolute inset-0 opacity-5"
           style={{ backgroundImage: parchmentTexture, backgroundSize: '200px 200px' }}
         />
         
-        <div className="relative z-10 container mx-auto px-8 max-w-6xl h-full flex flex-col justify-center">
+        <div className="relative z-10 container mx-auto px-8 max-w-6xl">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -30 }}
@@ -86,32 +86,32 @@ const RealWorldExamples = () => {
           </motion.div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 max-h-[70vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Tổng hợp */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-amber-900/20 backdrop-blur-sm rounded-3xl border border-amber-800/30 p-10 h-full"
+              className="bg-amber-900/20 backdrop-blur-sm rounded-3xl border border-amber-800/30 p-10"
             >
               <div className="flex items-center mb-6">
                 <span className="text-5xl mr-4">{summaryData.icon}</span>
                 <h2 className="text-4xl font-bold text-amber-200">{summaryData.title}</h2>
               </div>
               
-              <p className="text-amber-100/85 leading-relaxed mb-10 text-xl">
+              <p className="text-amber-100/85 leading-relaxed mb-8 text-xl">
                 {summaryData.description}
               </p>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {summaryData.keyPoints.map((point, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                    className="flex items-start space-x-4 p-5 bg-amber-800/20 rounded-xl border border-amber-700/20 hover:bg-amber-800/30 transition-colors"
+                    className="flex items-start space-x-4 p-4 bg-amber-800/20 rounded-xl border border-amber-700/20 hover:bg-amber-800/30 transition-colors"
                   >
                     <span className="text-2xl mt-1">{point.icon}</span>
                     <div>
@@ -128,37 +128,33 @@ const RealWorldExamples = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="bg-yellow-900/20 backdrop-blur-sm rounded-3xl border border-yellow-800/30 p-10 h-full overflow-y-auto"
+              className="bg-yellow-900/20 backdrop-blur-sm rounded-3xl border border-yellow-800/30 p-10"
             >
               <div className="flex items-center mb-6">
                 <span className="text-5xl mr-4">{significanceData.icon}</span>
                 <h2 className="text-4xl font-bold text-yellow-200">{significanceData.title}</h2>
               </div>
               
-              <p className="text-yellow-100/85 leading-relaxed mb-10 text-xl">
+              <p className="text-yellow-100/85 leading-relaxed mb-8 text-xl">
                 {significanceData.description}
               </p>
 
-              <div className="space-y-6">
-                <div className="space-y-5">
-                  {significanceData.applications.map((app, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                      className="flex items-start space-x-5 p-5 bg-yellow-800/20 rounded-xl border border-yellow-700/20 hover:bg-yellow-800/30 transition-colors"
-                    >
-                      <span className="text-3xl mt-1">{app.icon}</span>
-                      <div>
-                        <h3 className="font-semibold text-yellow-200 mb-2 text-lg">{app.title}</h3>
-                        <p className="text-yellow-100/75 leading-relaxed text-base">{app.description}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-
+              <div className="space-y-4">
+                {significanceData.applications.map((app, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                    className="flex items-start space-x-5 p-5 bg-yellow-800/20 rounded-xl border border-yellow-700/20 hover:bg-yellow-800/30 transition-colors"
+                  >
+                    <span className="text-3xl mt-1">{app.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-yellow-200 mb-2 text-lg">{app.title}</h3>
+                      <p className="text-yellow-100/75 leading-relaxed text-base">{app.description}</p>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           </div>
