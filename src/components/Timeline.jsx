@@ -29,7 +29,7 @@ const timelineData = [
       imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Lord_Clive_meeting_with_Mir_Jafar_after_the_Battle_of_Plassey.jpg/1280px-Lord_Clive_meeting_with_Mir_Jafar_after_the_Battle_of_Plassey.jpg"
     },
     {
-      title: "Xã hội chủ nghĩa",
+      title: "Cộng sản chủ nghĩa",
       period: "Thế kỷ 20 - hiện tại",
       desc: "Giai cấp công nhân và nhân dân lao động làm chủ, xóa bỏ chế độ tư hữu về tư liệu sản xuất.",
       imageUrl: "https://phaptri.vn/upload_images/images/2023/09/23/mac-lenin-05.png"
